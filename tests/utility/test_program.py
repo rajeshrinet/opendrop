@@ -1,6 +1,6 @@
 from typing import NewType
 
-from injector import Module, provider, inject
+from injector import Module, provider, inject, InstanceProvider
 
 from opendrop.utility.program import Program
 
@@ -57,11 +57,28 @@ def test_program_run_passes_kwargs_to_main():
     class MyProgram(Program):
         modules = []
 
-        def main(self, **kwargs) -> None:
-            return kwargs == {
+        def main(self, **kwargs):
+            assert kwargs == {
                 'abc': 123,
                 'x': 42,
             }
 
     program = MyProgram()
     program.run(abc=123, x=42)
+
+
+def test_program_configure():
+    MyKey = NewType('MyKey', int)
+
+    class MyProgram(Program):
+        modules = []
+
+        def configure(self, binder) -> None:
+            binder.bind(interface=MyKey, to=InstanceProvider(66))
+
+        @inject
+        def main(self, my_key: MyKey) -> None:
+            assert my_key == 66
+
+    program = MyProgram()
+    program.run()
