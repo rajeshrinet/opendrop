@@ -2,6 +2,7 @@ from typing import Optional
 
 from injector import Binder, Module, inject, singleton
 
+from opendrop.app.start.component import StartComponent
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
 from .service import AppService
 
@@ -23,14 +24,23 @@ class AppView(View):
 
         self._current_component = None
 
-    def remove_current_component(self) -> None:
+    def clear_current_component(self) -> None:
         if self._current_component is None:
             return
 
         self._current_component.destroy()
 
+    def set_current_component(self, component: Component) -> None:
+        assert self._current_component is None
+        self._current_component = component
+
     def show_start(self) -> None:
-        print('show_start()')
+        self.clear_current_component()
+
+        start_cmp = self._cf.create(StartComponent)
+        start_cmp.widget.show()
+
+        self.set_current_component(start_cmp)
 
     def new_ift_session(self) -> None:
         print('new_ift_session()')
