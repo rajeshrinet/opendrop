@@ -27,7 +27,12 @@
 # with this software.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from opendrop.app.app import App
+import gi
+gi.require_version('Gtk', '3.0')
 
-app = App()
-app.start()
+
+from opendrop.app.component import AppComponent
+from opendrop.appfw import Bootstrap
+
+program = Bootstrap(AppComponent)
+program.run()
