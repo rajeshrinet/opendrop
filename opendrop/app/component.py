@@ -2,10 +2,10 @@ from typing import Optional
 
 from injector import Binder, Module, inject, singleton
 
-from opendrop.app.ift.component import IFTComponent
-from opendrop.app.start.component import StartComponent
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
+from .ift.component import IFTComponent
 from .service import AppService
+from .start.component import StartComponent
 
 
 class AppModule(Module):
@@ -22,35 +22,33 @@ class AppView(View):
     @inject
     def __init__(self, cf: ComponentFactory) -> None:
         self._cf = cf
+        self._activity = None  # type: Optional[Component]
 
-        self._current_component = None
-
-    def clear_current_component(self) -> None:
-        current_component = self._current_component
-        if current_component is None:
+    def _clear_activity(self) -> None:
+        activity = self._activity
+        if activity is None:
             return
 
-        self._current_component = None
-        current_component.destroy()
+        self._activity = None
+        activity.destroy()
 
-    def set_current_component(self, component: Component) -> None:
-        assert self._current_component is None
-        self._current_component = component
+    def _set_activity(self, activity: Component) -> None:
+        self._clear_activity()
+
+        if activity is None:
+            return
+
+        self._activity = activity
 
     def show_start(self) -> None:
-        self.clear_current_component()
-
         start_cmp = self._cf.create(StartComponent)
+        self._set_activity(start_cmp)
+
         start_cmp.widget.show()
 
-        self.set_current_component(start_cmp)
-
     def new_ift_session(self) -> None:
-        self.clear_current_component()
-
         ift_cmp = self._cf.create(IFTComponent)
-
-        self.set_current_component(ift_cmp)
+        self._set_activity(ift_cmp)
 
     def new_conan_session(self) -> None:
         print('new_conan_session()')
