@@ -18,6 +18,7 @@ class Component:
     def __init__(self, parent_injector: Injector, *, additional_kwargs: Mapping[str, Any]) -> None:
         self._children_registry = ComponentChildrenRegistry()
         self._parent = None  # type: Optional[Component]
+        self._is_destroyed = False
 
         self.on_destroyed = Event()
 
@@ -54,6 +55,11 @@ class Component:
         self._children_registry.register(child)
 
     def destroy(self) -> None:
+        if self._is_destroyed:
+            raise ValueError('{} is already destroyed'.format(self))
+
+        self._is_destroyed = True
+
         for child in self._children_registry:
             child.destroy()
 
