@@ -2,6 +2,7 @@ from typing import Optional
 
 from injector import Binder, Module, inject, singleton
 
+from opendrop.app.ift.component import IFTComponent
 from opendrop.app.start.component import StartComponent
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
 from .service import AppService
@@ -86,6 +87,3 @@ class AppPresenter(Presenter):
     def before_view_destroy(self) -> None:
         for f in self._before_view_destroy_cleanup_tasks:
             f()
-
-    def hdl_window_closed(self) -> None:
-        self._model.quit()
