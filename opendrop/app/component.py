@@ -26,10 +26,12 @@ class AppView(View):
         self._current_component = None
 
     def clear_current_component(self) -> None:
-        if self._current_component is None:
+        current_component = self._current_component
+        if current_component is None:
             return
 
-        self._current_component.destroy()
+        self._current_component = None
+        current_component.destroy()
 
     def set_current_component(self, component: Component) -> None:
         assert self._current_component is None
@@ -44,7 +46,11 @@ class AppView(View):
         self.set_current_component(start_cmp)
 
     def new_ift_session(self) -> None:
-        print('new_ift_session()')
+        self.clear_current_component()
+
+        ift_cmp = self._cf.create(IFTComponent)
+
+        self.set_current_component(ift_cmp)
 
     def new_conan_session(self) -> None:
         print('new_conan_session()')
