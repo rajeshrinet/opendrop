@@ -59,6 +59,7 @@ class Component:
             raise ValueError('{} is already destroyed'.format(self))
 
         self._is_destroyed = True
+        self.on_destroyed.fire()
 
         for child in self._children_registry:
             child.destroy()
