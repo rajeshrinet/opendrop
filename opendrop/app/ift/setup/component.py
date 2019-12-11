@@ -1,8 +1,9 @@
 from gi.repository import Gtk, Gdk
 from injector import inject, Module, Binder, singleton
 
-from opendrop.app.ift.setup.service import SetupService
-from opendrop.appfw import WidgetComponent, WidgetView, Presenter
+from opendrop.app.setup.imageacquisition.component import ImageAcquisitionConfiguratorComponent
+from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
+from .service import SetupService
 
 
 class SetupModule(Module):
@@ -17,7 +18,7 @@ class SetupComponent(WidgetComponent):
 @SetupComponent.view
 class SetupView(WidgetView):
     @inject
-    def __init__(self, presenter: 'SetupPresenter') -> None:
+    def __init__(self, presenter: 'SetupPresenter', cf: ComponentFactory) -> None:
         self._presenter = presenter
 
         window = Gtk.Window(title='Interfacial Tension Setup',  window_position=Gtk.WindowPosition.CENTER)
@@ -26,11 +27,20 @@ class SetupView(WidgetView):
         body = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
         window.add(body)
 
-        body.add(Gtk.Label('Setup', hexpand=True, vexpand=True))
+        content_area = Gtk.Grid(hexpand=True, vexpand=True, margin=5)
+        body.add(content_area)
+
         body.add(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
-        action_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5, margin=5)
+        action_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, hexpand=True, spacing=5, margin=5)
         body.add(action_area)
+
+        image_acquisition_frame = Gtk.Frame(label='Image acquisition', hexpand=True, vexpand=True)
+        content_area.add(image_acquisition_frame)
+
+        image_acquisition_configurator_cmp = cf.create(ImageAcquisitionConfiguratorComponent)
+        image_acquisition_configurator_cmp.widget.props.margin = 10
+        image_acquisition_frame.add(image_acquisition_configurator_cmp.widget)
 
         continue_btn = Gtk.Button('Continue')
         continue_btn.get_style_context().add_class('suggested-action')
