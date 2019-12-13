@@ -72,7 +72,7 @@ class SetupPresenter(Presenter['SetupView']):
 
     def hdl_continue_btn_clicked(self) -> None:
         # perform setup here
-
+        self._service.set_up()
         self._on_success()
 
     def hdl_cancel_btn_clicked(self) -> None:

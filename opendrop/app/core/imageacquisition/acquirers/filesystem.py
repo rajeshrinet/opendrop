@@ -9,7 +9,7 @@ class FilesystemAcquirer:
 
 class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):
     def get(self) -> FilesystemAcquirer:
-        raise NotImplementedError
+        return FilesystemAcquirer()
 
 
 class FilesystemAcquirerModule(Module):
