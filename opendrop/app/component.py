@@ -1,16 +1,11 @@
 from typing import Optional
 
-from injector import Binder, Module, inject, singleton
+from injector import inject
 
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
 from .ift.component import IFTComponent
-from .service import AppService
+from .service import AppModule, AppService
 from .start.component import StartComponent
-
-
-class AppModule(Module):
-    def configure(self, binder: Binder) -> None:
-        binder.bind(interface=AppService, to=AppService, scope=singleton)
 
 
 class AppComponent(Component):

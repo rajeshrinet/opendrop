@@ -1,7 +1,8 @@
 from injector import Module, Binder, singleton
 from injector import inject
 
-from opendrop.app.core.imageacquisition import ImageAcquisitionModule, ImageAcquisitionService
+from opendrop.app.core.imageacquisition import ImageAcquisitionModule
+from opendrop.app.core.imageacquisition.service import ImageAcquisitionService
 
 
 class SessionModule(Module):

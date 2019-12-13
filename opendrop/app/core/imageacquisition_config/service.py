@@ -1,11 +1,18 @@
 from typing import Type
 
+from injector import Module, Binder, singleton
 from injector import inject, Injector
 
 from opendrop.app.core.config_base import Configurator
 from opendrop.app.core.imageacquisition.acquirers import ImageAcquirerProvider, FilesystemAcquirerProvider
 from opendrop.app.core.imageacquisition.service import ImageAcquisitionService
-from opendrop.utility.bindable import BoxBindable, Bindable
+from opendrop.utility.bindable import VariableBindable
+from opendrop.utility.bindable.typing import Bindable
+
+
+class ImageAcquisitionConfiguratorModule(Module):
+    def configure(self, binder: Binder) -> None:
+        binder.bind(interface=ImageAcquisitionConfiguratorService, to=ImageAcquisitionConfiguratorService, scope=singleton)
 
 
 class ImageAcquisitionConfiguratorService(Configurator):
@@ -14,7 +21,7 @@ class ImageAcquisitionConfiguratorService(Configurator):
         self._service = service
         self._injector = injector
 
-        self.acquirer_provider = BoxBindable(
+        self.acquirer_provider = VariableBindable(
             initial=self._resolve_default_acquirer_provider()
         )  # type: Bindable[ImageAcquirerProvider]
 

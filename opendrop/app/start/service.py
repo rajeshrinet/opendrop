@@ -1,6 +1,11 @@
-from injector import inject
+from injector import Module, Binder, inject
 
 from opendrop.app.service import AppService
+
+
+class StartModule(Module):
+    def configure(self, binder: Binder) -> None:
+        binder.bind(interface=StartService, to=StartService)
 
 
 class StartService:

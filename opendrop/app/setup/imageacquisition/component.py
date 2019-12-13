@@ -6,7 +6,7 @@ from injector import inject
 from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirerProvider, USBCameraAcquirerProvider
 from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
-from opendrop.utility.bindablegext import GObjectPropertyBindable
+from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from ._editors import EditorsModule, EditorResolver
 
 PROVIDER_TO_ID_MAP = {

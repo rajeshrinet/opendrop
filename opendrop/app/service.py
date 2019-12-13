@@ -1,7 +1,12 @@
-from injector import inject
+from injector import Binder, Module, inject, singleton
 
 from opendrop.appfw import QuitService
 from opendrop.utility.events import Event
+
+
+class AppModule(Module):
+    def configure(self, binder: Binder) -> None:
+        binder.bind(interface=AppService, to=AppService, scope=singleton)
 
 
 class AppService:

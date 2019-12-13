@@ -1,9 +1,7 @@
 from injector import Module, Binder, inject, singleton
 
-from opendrop.app.core.imageacquisition_config import (
-    ImageAcquisitionConfiguratorModule,
-    ImageAcquisitionConfiguratorService
-)
+from opendrop.app.core.imageacquisition_config import ImageAcquisitionConfiguratorModule
+from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 
 
 class SetupModule(Module):

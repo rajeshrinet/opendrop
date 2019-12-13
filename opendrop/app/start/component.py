@@ -1,13 +1,9 @@
 from gi.repository import Gtk, Gdk
-from injector import Module, Binder, inject
+from injector import inject
 
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter
+from . import StartModule
 from .service import StartService
-
-
-class StartModule(Module):
-    def configure(self, binder: Binder) -> None:
-        binder.bind(interface=StartService, to=StartService)
 
 
 class StartComponent(WidgetComponent):

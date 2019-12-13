@@ -27,10 +27,6 @@
 # with this software.  If not, see <https://www.gnu.org/licenses/>.
 
 
-import gi
-gi.require_version('Gtk', '3.0')
-
-
 from opendrop.app.component import AppComponent
 from opendrop.appfw import Bootstrap
 
