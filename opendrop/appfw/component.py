@@ -31,12 +31,23 @@ class Component:
 
         assert self._presenter_cls is not None
 
+        presenter_kwargs = _filter_kwargs(
+            signature=signature(self._presenter_cls.__init__),
+            kwargs=additional_kwargs,
+        )
+
+        view_kwargs = _filter_kwargs(
+            signature=signature(self._view_cls.__init__),
+            kwargs=additional_kwargs,
+        )
+
+        unused_keywords = set(additional_kwargs.keys()) - {*presenter_kwargs.keys(), *view_kwargs.keys()}
+        if unused_keywords:
+            raise ValueError("'additional_kwargs' contains unused keywords {!s}".format(unused_keywords))
+
         self._presenter_obj = self._injector.create_object(
             cls=self._presenter_cls,
-            additional_kwargs=_filter_kwargs(
-                signature=signature(self._presenter_cls.__init__),
-                kwargs=additional_kwargs
-            ),
+            additional_kwargs=presenter_kwargs
         )
 
         assert self._view_cls is not None
