@@ -56,7 +56,7 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         self._current_editor.destroy()
         self._current_editor = None
 
-    def set_editor(self, editor_cls: Optional[Type[WidgetComponent]], acquirer_provider: Any) -> None:
+    def change_editor_type(self, editor_cls: Optional[Type[WidgetComponent]], acquirer_provider: Any) -> None:
         if editor_cls is not None and isinstance(self._current_editor, editor_cls):
             return
 
@@ -103,7 +103,7 @@ class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfigurat
         except UnknownImageAcquirerProvider:
             editor_cls = None
 
-        self._view.set_editor(editor_cls, acquirer_provider=acquirer_provider)
+        self._view.change_editor_type(editor_cls, acquirer_provider=acquirer_provider)
 
         provider_cls = type(acquirer_provider)
         self._view.imgsrc_combobox_selection.set(provider_cls.__name__)
