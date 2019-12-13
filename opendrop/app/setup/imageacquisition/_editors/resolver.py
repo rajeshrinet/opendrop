@@ -5,6 +5,10 @@ from opendrop.app.core.imageacquisition.acquirers.usbcamera import USBCameraAcqu
 from opendrop.appfw import WidgetComponent
 
 
+class UnknownImageAcquirerProvider(Exception):
+    """Raised when an unknown ImageAcquirerProvider is given to EditorResolver."""
+
+
 class EditorResolver:
     @staticmethod
     def resolve(acquirer_provider: ImageAcquirerProvider) -> Type[WidgetComponent]:
@@ -16,4 +20,4 @@ class EditorResolver:
             from .usbcamera.component import USBCameraEditorComponent
             return USBCameraEditorComponent
 
-        raise ValueError('No editor found for {!r}'.format(acquirer_provider))
+        raise UnknownImageAcquirerProvider('No editor found for {!r}'.format(acquirer_provider))

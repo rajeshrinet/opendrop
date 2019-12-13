@@ -7,7 +7,7 @@ from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirerProvi
 from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
-from ._editors import EditorsModule, EditorResolver
+from ._editors import EditorsModule, EditorResolver, UnknownImageAcquirerProvider
 
 
 class ImageAcquisitionConfiguratorComponent(WidgetComponent):
@@ -56,11 +56,14 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         self._current_editor.destroy()
         self._current_editor = None
 
-    def set_editor(self, editor_cls: Type[WidgetComponent], acquirer_provider: Any) -> None:
-        if isinstance(self._current_editor, editor_cls):
+    def set_editor(self, editor_cls: Optional[Type[WidgetComponent]], acquirer_provider: Any) -> None:
+        if editor_cls is not None and isinstance(self._current_editor, editor_cls):
             return
 
         self._clear_editor()
+
+        if editor_cls is None:
+            return
 
         editor = self._cf.create(editor_cls, factory=acquirer_provider)
         self._current_editor = editor
@@ -95,7 +98,11 @@ class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfigurat
     def _hdl_acquirer_provider_changed(self) -> None:
         acquirer_provider = self._service.acquirer_provider.get()
 
-        editor_cls = self._resolver.resolve(acquirer_provider)
+        try:
+            editor_cls = self._resolver.resolve(acquirer_provider)
+        except UnknownImageAcquirerProvider:
+            editor_cls = None
+
         self._view.set_editor(editor_cls, acquirer_provider=acquirer_provider)
 
         provider_cls = type(acquirer_provider)
