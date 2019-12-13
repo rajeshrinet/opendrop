@@ -9,23 +9,6 @@ from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFact
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from ._editors import EditorsModule, EditorResolver
 
-PROVIDER_TO_ID_MAP = {
-    FilesystemAcquirerProvider: 'filesystem',
-    USBCameraAcquirerProvider: 'usbcamera',
-}
-
-
-def _id_from_provider_cls(provider_cls: Any) -> str:
-    return PROVIDER_TO_ID_MAP[provider_cls]
-
-
-def _provider_cls_from_id(provider_id: str) -> Any:
-    for k, v in PROVIDER_TO_ID_MAP.items():
-        if v == provider_id:
-            return k
-    else:
-        raise ValueError('Unknown provider id {!r}'.format(provider_id))
-
 
 class ImageAcquisitionConfiguratorComponent(WidgetComponent):
     modules = [EditorsModule]
@@ -50,8 +33,9 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         imgsrc_combobox = Gtk.ComboBoxText()
         imgsrc_div.add(imgsrc_combobox)
 
-        imgsrc_combobox.append(id='filesystem', text='Filesystem')
-        imgsrc_combobox.append(id='usbcamera', text='USB Camera')
+        # Combobox option id's must be strings
+        imgsrc_combobox.append(id=FilesystemAcquirerProvider.__name__, text='Filesystem')
+        imgsrc_combobox.append(id=USBCameraAcquirerProvider.__name__, text='USB Camera')
 
         editor_container = Gtk.Grid()
         body.add(editor_container)
@@ -115,17 +99,18 @@ class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfigurat
         self._view.set_editor(editor_cls, acquirer_provider=acquirer_provider)
 
         provider_cls = type(acquirer_provider)
-        provider_id = _id_from_provider_cls(provider_cls)
-        self._view.imgsrc_combobox_selection.set(provider_id)
+        self._view.imgsrc_combobox_selection.set(provider_cls.__name__)
 
     def _hdl_imgsrc_combobox_selection_changed(self) -> None:
         selection = self._view.imgsrc_combobox_selection.get()
         if selection is None:
             return
 
+        new_provider_cls = eval(selection)
+
         current_provider = self._service.acquirer_provider.get()
         current_provider_cls = type(current_provider)
-        new_provider_cls = _provider_cls_from_id(selection)
+
         if new_provider_cls is current_provider_cls:
             return
 
