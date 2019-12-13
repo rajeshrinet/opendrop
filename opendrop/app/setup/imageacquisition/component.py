@@ -65,7 +65,7 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         if editor_cls is None:
             return
 
-        editor = self._cf.create(editor_cls, factory=acquirer_provider)
+        editor = self._cf.create(editor_cls, acquirer_provider=acquirer_provider)
         self._current_editor = editor
 
         self._editor_container.add(editor.widget)
