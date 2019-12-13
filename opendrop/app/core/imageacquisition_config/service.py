@@ -31,7 +31,7 @@ class ImageAcquisitionConfiguratorService(Configurator):
         provider = self._injector.get(FilesystemAcquirerProvider)
         return provider
 
-    def change_provider(self, provider_cls: Type[ImageAcquirerProvider]) -> None:
+    def change_provider_type(self, provider_cls: Type[ImageAcquirerProvider]) -> None:
         provider = self._injector.get(provider_cls)
         self.acquirer_provider.set(provider)
 

@@ -114,7 +114,7 @@ class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfigurat
         if new_provider_cls is current_provider_cls:
             return
 
-        self._service.change_provider(new_provider_cls)
+        self._service.change_provider_type(new_provider_cls)
 
     def before_view_destroy(self) -> None:
         for f in self._before_view_destroy_cleanup_tasks:
