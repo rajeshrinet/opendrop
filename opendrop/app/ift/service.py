@@ -1,6 +1,13 @@
-from injector import inject
+from injector import Module, Binder, inject, singleton
 
 from opendrop.app.service import AppService
+from .core import SessionModule
+
+
+class IFTModule(Module):
+    def configure(self, binder: Binder) -> None:
+        binder.install(SessionModule)
+        binder.bind(interface=IFTService, to=IFTService, scope=singleton)
 
 
 class IFTService:
@@ -8,11 +15,8 @@ class IFTService:
     def __init__(self, app_service: AppService) -> None:
         self._app_service = app_service
 
-    def submit_setup(self) -> None:
-        print('submit_setup()')
-
-    def cancel_setup(self) -> None:
+    def back(self) -> None:
         self._app_service.show_start()
 
-    def close_setup(self) -> None:
+    def quit(self) -> None:
         self._app_service.quit()

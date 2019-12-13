@@ -1,14 +1,12 @@
-from gi.repository import Gtk, Gdk
-from injector import inject, Module, Binder, singleton
+from typing import Optional, Callable
 
+from gi.repository import Gtk, Gdk
+from injector import inject
+
+from opendrop.app.ift.core import SetupModule
+from opendrop.app.ift.core.setup_service import SetupService
 from opendrop.app.setup.imageacquisition.component import ImageAcquisitionConfiguratorComponent
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
-from .service import SetupService
-
-
-class SetupModule(Module):
-    def configure(self, binder: Binder) -> None:
-        binder.bind(interface=SetupService, to=SetupService, scope=singleton)
 
 
 class SetupComponent(WidgetComponent):
@@ -65,14 +63,20 @@ class SetupView(WidgetView):
 @SetupComponent.presenter
 class SetupPresenter(Presenter['SetupView']):
     @inject
-    def __init__(self, service: SetupService) -> None:
+    def __init__(self, service: SetupService, *, on_success: Optional[Callable] = None, on_cancel: Optional[Callable] = None, on_close: Optional[Callable] = None) -> None:
         self._service = service
 
+        self._on_success = on_success or (lambda: None)
+        self._on_cancel = on_cancel or (lambda: None)
+        self._on_close = on_close or (lambda: None)
+
     def hdl_continue_btn_clicked(self) -> None:
-        self._service.submit()
+        # perform setup here
+
+        self._on_success()
 
     def hdl_cancel_btn_clicked(self) -> None:
-        self._service.cancel()
+        self._on_cancel()
 
     def hdl_window_close(self) -> None:
-        self._service.close()
+        self._on_close()

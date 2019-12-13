@@ -1,4 +1,5 @@
-from opendrop.appfw import Component, View, Presenter
+from opendrop.app.ift.analysis.main.component import MainComponent
+from opendrop.appfw import Component, View, Presenter, ComponentFactory
 
 
 class AnalysisComponent(Component):
@@ -7,7 +8,9 @@ class AnalysisComponent(Component):
 
 @AnalysisComponent.view
 class AnalysisView(View):
-    pass
+    def __init__(self, cf: ComponentFactory) -> None:
+        main_cmp = cf.create(MainComponent)
+        main_cmp.widget.show()
 
 
 @AnalysisComponent.presenter

@@ -1,17 +1,11 @@
 from typing import Optional
 
-from injector import Module, Binder, inject, singleton
+from injector import inject
 
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
-from .core import IFTSessionModule
+from . import IFTModule
 from .service import IFTService
 from .setup.component import SetupComponent
-
-
-class IFTModule(Module):
-    def configure(self, binder: Binder) -> None:
-        binder.install(IFTSessionModule)
-        binder.bind(interface=IFTService, to=IFTService, scope=singleton)
 
 
 class IFTComponent(Component):
@@ -21,7 +15,8 @@ class IFTComponent(Component):
 @IFTComponent.view
 class IFTView(View):
     @inject
-    def __init__(self, cf: ComponentFactory) -> None:
+    def __init__(self, presenter: 'IFTPresenter', cf: ComponentFactory) -> None:
+        self._presenter = presenter
         self._cf = cf
         self._activity = None  # type: Optional[Component]
 
@@ -42,7 +37,12 @@ class IFTView(View):
         self._activity = activity
 
     def show_setup(self) -> None:
-        setup_cmp = self._cf.create(SetupComponent)
+        setup_cmp = self._cf.create(
+            SetupComponent,
+            on_success=self._presenter.hdl_setup_success,
+            on_cancel=self._presenter.hdl_setup_cancel,
+            on_close=self._presenter.hdl_setup_close,
+        )
         self._set_activity(setup_cmp)
         setup_cmp.widget.show()
 
@@ -55,3 +55,12 @@ class IFTPresenter(Presenter[IFTView]):
 
     def after_view_init(self, view: IFTView) -> None:
         view.show_setup()
+
+    def hdl_setup_success(self) -> None:
+        print('setup success')
+
+    def hdl_setup_cancel(self) -> None:
+        self._service.back()
+
+    def hdl_setup_close(self) -> None:
+        self._service.quit()
