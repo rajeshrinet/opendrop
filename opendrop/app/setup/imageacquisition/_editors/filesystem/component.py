@@ -17,9 +17,9 @@ class FilesystemEditorComponent(WidgetComponent):
 
 @FilesystemEditorComponent.view
 class FilesystemEditorView(WidgetView):
-    _FILE_INPUT_FILTER = Gtk.FileFilter()
-    _FILE_INPUT_FILTER.add_mime_type('image/png')
-    _FILE_INPUT_FILTER.add_mime_type('image/jpg')
+    _FILE_CHOOSER_FILTER = Gtk.FileFilter()
+    _FILE_CHOOSER_FILTER.add_mime_type('image/png')
+    _FILE_CHOOSER_FILTER.add_mime_type('image/jpg')
 
     def __init__(self) -> None:
         body = Gtk.Grid(row_spacing=5, column_spacing=5)
@@ -29,7 +29,7 @@ class FilesystemEditorView(WidgetView):
         body.attach(file_chooser_lbl, 0, 0, 1, 1)
 
         file_chooser_btn = FileChooserButton(
-            filter=self._FILE_INPUT_FILTER,
+            filter=self._FILE_CHOOSER_FILTER,
             select_multiple=True,
         )
         file_chooser_btn.get_style_context().add_class('small-pad')
