@@ -46,6 +46,10 @@ class FileChooserButton(Gtk.Button):
 
         self._active_dialog = None  # type: Optional[Gtk.FileChooserDialog]
 
+        # Connect to the 'destroy' signal instead of implementing a do_destroy() method.
+        # See: https://stackoverflow.com/q/59334212
+        self.connect('destroy', FileChooserButton._hdl_destroy)
+
     def do_clicked(self) -> None:
         if self._active_dialog is not None:
             return
@@ -92,7 +96,7 @@ class FileChooserButton(Gtk.Button):
     get_file_paths = file_paths.fget
     set_file_paths = file_paths.fset
 
-    def do_destroy(self) -> None:
+    def _hdl_destroy(self) -> None:
         if self._active_dialog:
             self._active_dialog.destroy()
             self._active_dialog = None
