@@ -11,11 +11,11 @@ from .base import ImageAcquirerProvider
 
 class FilesystemAcquirer:
     def __init__(self, image_paths: Sequence[Path], frame_interval: float) -> None:
-        if not math.isfinite(frame_interval):
-            raise ValueError("Expected 'frame_interval' to be finite, got '{}'".format(frame_interval))
-
         if len(image_paths) == 0:
             raise ValueError("'image_paths' cannot be an empty sequence")
+
+        if len(image_paths) > 1 and not math.isfinite(frame_interval):
+            raise ValueError("Expected 'frame_interval' to be finite, got '{}'".format(frame_interval))
 
         self.images = []
         for image_path in image_paths:
