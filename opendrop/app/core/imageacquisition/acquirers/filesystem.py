@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Sequence
 
 import cv2
+import numpy as np
 from injector import Module, provider
 
 from opendrop.utility.bindable import BoxBindable, Bindable
@@ -17,12 +18,17 @@ class FilesystemAcquirer:
         if len(image_paths) > 1 and not math.isfinite(frame_interval):
             raise ValueError("Expected 'frame_interval' to be finite, got '{}'".format(frame_interval))
 
-        self.images = []
-        for image_path in image_paths:
-            image = cv2.imread(str(image_path), flags=cv2.IMREAD_COLOR)
-            self.images.append(image)
-
+        self.images = self._load_image_paths(image_paths)
         self.frame_interval = frame_interval
+
+    @staticmethod
+    def _load_image_paths(paths: Sequence[Path]) -> Sequence[np.ndarray]:
+        images = [
+            cv2.imread(str(path), flags=cv2.IMREAD_COLOR)
+            for path in paths
+        ]
+
+        return images
 
 
 class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):
