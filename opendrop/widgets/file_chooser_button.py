@@ -60,7 +60,7 @@ class FileChooserButton(Gtk.Button):
 
         self._active_dialog.props.modal = True
         self._active_dialog.props.select_multiple = self.select_multiple
-        self._active_dialog.props.filter = self.file_filter
+        self._active_dialog.add_filter(self.file_filter)
 
         def hdl_file_chooser_dialog_response(dialog: Gtk.FileChooserDialog, response: Gtk.ResponseType):
             if response == Gtk.ResponseType.ACCEPT:
