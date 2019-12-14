@@ -33,15 +33,15 @@ from gi.repository import Gtk, GObject
 
 
 class FileChooserButton(Gtk.Button):
-    def __init__(self, label: str = 'Choose files', dialog_title: str = 'Select files',
-                 file_filter: Optional[Gtk.FileFilter] = None, select_multiple: bool = False, *args, **kwargs):
+    def __init__(self, label: str = 'Choose files', title: str = 'Select files',
+                 filter: Optional[Gtk.FileFilter] = None, select_multiple: bool = False, *args, **kwargs):
         super().__init__(label=label, *args, **kwargs)
 
         self._no_files_label = label
         self._file_paths = tuple()  # type: Tuple[str]
 
-        self.dialog_title = dialog_title
-        self.file_filter = file_filter
+        self._title = title
+        self._filter = filter
         self.select_multiple = select_multiple
 
         self._active_dialog = None  # type: Optional[Gtk.FileChooserDialog]
@@ -51,7 +51,7 @@ class FileChooserButton(Gtk.Button):
             return
 
         self._active_dialog = Gtk.FileChooserNative.new(
-            self.dialog_title,
+            self._title,
             self.get_toplevel(),
             Gtk.FileChooserAction.OPEN,
             'Open',
@@ -60,7 +60,7 @@ class FileChooserButton(Gtk.Button):
 
         self._active_dialog.props.modal = True
         self._active_dialog.props.select_multiple = self.select_multiple
-        self._active_dialog.add_filter(self.file_filter)
+        self._active_dialog.add_filter(self._filter)
 
         def hdl_file_chooser_dialog_response(dialog: Gtk.FileChooserDialog, response: Gtk.ResponseType):
             if response == Gtk.ResponseType.ACCEPT:

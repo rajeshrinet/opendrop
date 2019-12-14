@@ -25,8 +25,8 @@ class FilesystemEditorView(WidgetView):
         body.attach(file_chooser_lbl, 0, 0, 1, 1)
 
         self._file_chooser_inp = FileChooserButton(
-            file_filter=self._FILE_INPUT_FILTER,
             select_multiple=True
+            filter=self._FILE_INPUT_FILTER,
         )
         self._file_chooser_inp.get_style_context().add_class('small-pad')
         body.attach_next_to(self._file_chooser_inp, file_chooser_lbl, Gtk.PositionType.RIGHT, 1, 1)
