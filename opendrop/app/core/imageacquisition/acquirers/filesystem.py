@@ -1,36 +1,47 @@
 import math
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, Union
 
-import cv2
 import numpy as np
+from PIL import Image
 from injector import Module, provider
 
 from opendrop.utility.bindable import VariableBindable
 from opendrop.utility.bindable.typing import Bindable
-
 from .base import ImageAcquirerProvider
+
+
+class EmptyPathsError(ValueError):
+    """Raised when FilesystemAcquirer is given an empty image_paths."""
+
+
+class UnknownImageTypeError(OSError):
+    """Raised when trying to load an image of unknown type."""
 
 
 class FilesystemAcquirer:
     def __init__(self, image_paths: Sequence[Path], frame_interval: float) -> None:
-        if len(image_paths) == 0:
-            raise ValueError("'image_paths' cannot be an empty sequence")
+        self._check_image_paths(image_paths)
+        self._check_frame_interval(image_paths, frame_interval)
 
-        if len(image_paths) > 1 and not math.isfinite(frame_interval):
-            raise ValueError("Expected 'frame_interval' to be finite, got '{}'".format(frame_interval))
-
-        self.images = self._load_image_paths(image_paths)
+        self.images = [_load_image(path) for path in image_paths]
         self.frame_interval = frame_interval
 
     @staticmethod
-    def _load_image_paths(paths: Sequence[Path]) -> Sequence[np.ndarray]:
-        images = [
-            cv2.imread(str(path), flags=cv2.IMREAD_COLOR)
-            for path in paths
-        ]
+    def _check_image_paths(image_paths: Sequence[Path]) -> None:
+        if len(image_paths) == 0:
+            raise EmptyPathsError("'image_paths' cannot be an empty sequence")
 
-        return images
+    @staticmethod
+    def _check_frame_interval(image_paths: Sequence[Path], frame_interval: float) -> None:
+        if len(image_paths) <= 1:
+            return
+
+        if not math.isfinite(frame_interval):
+            raise ValueError("Expected 'frame_interval' to be finite, got '{}'".format(frame_interval))
+
+        if frame_interval < 0:
+            raise ValueError("'frame_interval' cannot be negative")
 
 
 class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):
@@ -52,3 +63,15 @@ class FilesystemAcquirerModule(Module):
     @provider
     def acquirer_provider(self) -> FilesystemAcquirerProvider:
         return FilesystemAcquirerProvider()
+
+
+def _load_image(path: Union[Path, str]) -> np.ndarray:
+    try:
+        image_pil = Image.open(path)
+    except FileNotFoundError:
+        raise
+    except OSError as e:
+        raise UnknownImageTypeError(str(e))
+
+    image = np.array(image_pil)
+    return image

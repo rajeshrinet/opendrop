@@ -49,5 +49,6 @@ setup(
         'setuptools',
         'typing_extensions',
         'injector',
+        'Pillow',
     ]
 )
