@@ -6,7 +6,9 @@ import cv2
 import numpy as np
 from injector import Module, provider
 
-from opendrop.utility.bindable import BoxBindable, Bindable
+from opendrop.utility.bindable import VariableBindable
+from opendrop.utility.bindable.typing import Bindable
+
 from .base import ImageAcquirerProvider
 
 
@@ -33,8 +35,8 @@ class FilesystemAcquirer:
 
 class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):
     def __init__(self) -> None:
-        self.image_paths = BoxBindable(initial=())  # type: Bindable[Sequence[Path]]
-        self.frame_interval = BoxBindable(initial=math.nan)  # type: Bindable[float]
+        self.image_paths = VariableBindable(tuple())  # type: Bindable[Sequence[Path]]
+        self.frame_interval = VariableBindable(math.nan)  # type: Bindable[float]
 
     def get(self) -> FilesystemAcquirer:
         image_paths = self.image_paths.get()

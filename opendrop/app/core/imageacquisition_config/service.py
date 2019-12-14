@@ -20,7 +20,7 @@ class ImageAcquisitionConfiguratorService(Configurator):
         self._service = service
         self._injector = injector
 
-        self.acquirer_provider = VariableBindable(initial=None)  # type: Bindable[Optional[ImageAcquirerProvider]]
+        self.acquirer_provider = VariableBindable(None)  # type: Bindable[Optional[ImageAcquirerProvider]]
 
         self._prepared_acquirer = None  # type: Optional[ImageAcquirer]
 
