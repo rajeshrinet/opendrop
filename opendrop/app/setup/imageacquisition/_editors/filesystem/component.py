@@ -6,7 +6,7 @@ from injector import inject
 
 from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirerProvider
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter
-from opendrop.utility.bindablegext import GObjectPropertyBindable
+from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from opendrop.widgets.file_chooser_button import FileChooserButton
 from opendrop.widgets.float_entry import FloatEntry
 
