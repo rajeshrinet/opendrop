@@ -62,7 +62,14 @@ class SetupView(WidgetView):
         # return True to prevent window from closing.
         return True
 
+    _is_showing_error = False
+
     def show_error(self, error: Any) -> None:
+        if self._is_showing_error:
+            return
+
+        self._is_showing_error = True
+
         error_dialog = ErrorDialog(
             parent=self._window,
             title='Error',
@@ -70,8 +77,12 @@ class SetupView(WidgetView):
         )
 
         error_dialog.connect('response', lambda *_: error_dialog.destroy())
+        error_dialog.connect('destroy', self._hdl_error_dialog_destroy)
 
         error_dialog.show()
+
+    def _hdl_error_dialog_destroy(self, dialog: Gtk.Widget) -> None:
+        self._is_showing_error = False
 
 
 @SetupComponent.presenter
