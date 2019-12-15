@@ -20,15 +20,17 @@ class WindowContext:
     def window(self) -> Optional[Gtk.Window]:
         outer_scope = self._scope._parent
 
+        window = None  # type: Optional[Gtk.Window]
+
         while outer_scope is not None:
             if not isinstance(outer_scope, WidgetComponent):
-                outer_scope = outer_scope._parent
-                continue
+                window = None
+                break
 
-            if not isinstance(outer_scope.widget, Gtk.Window):
-                outer_scope = outer_scope._parent
-                continue
+            if isinstance(outer_scope.widget, Gtk.Window):
+                window = outer_scope.widget
+                break
 
-            return outer_scope.widget
+            outer_scope = outer_scope._parent
 
-        return None
+        return window
