@@ -1,3 +1,5 @@
+from typing import Optional
+
 from injector import Module, Binder, inject, singleton
 
 from opendrop.app.core.config import PreparationError
@@ -15,11 +17,11 @@ class SetupService:
     def __init__(self, config: SessionConfiguratorService) -> None:
         self._config = config
 
-    def set_up(self) -> None:
+    def set_up(self) -> Optional[Exception]:
         try:
             self._config.prepare()
-        except PreparationError:
+        except PreparationError as e:
             self._config.reset()
-            raise
+            return e.cause
         else:
             self._config.install()

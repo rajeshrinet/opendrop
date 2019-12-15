@@ -71,8 +71,12 @@ class SetupPresenter(Presenter['SetupView']):
         self._on_close = on_close or (lambda: None)
 
     def hdl_continue_btn_clicked(self) -> None:
-        # perform setup here
-        self._service.set_up()
+        error = self._service.set_up()
+        if error:
+            print('Error occurred when setting up.')
+            print(error)
+            return
+
         self._on_success()
 
     def hdl_cancel_btn_clicked(self) -> None:
