@@ -2,8 +2,8 @@ from injector import Module, Binder
 
 from ._abc import ImageAcquirerProvider, ImageAcquirer
 from ._resolver import ImageAcquirerResolverModule, ImageAcquirerResolver
-from .filesystem import FilesystemAcquirerModule, FilesystemAcquirerProvider, FilesystemAcquirer
-from .usbcamera import USBCameraAcquirerModule, USBCameraAcquirerProvider, USBCameraAcquirer
+from .filesystem import FilesystemAcquirerModule, FilesystemAcquirer
+from .usbcamera import USBCameraAcquirerModule, USBCameraAcquirer
 
 
 class _AcquirersModule(Module):

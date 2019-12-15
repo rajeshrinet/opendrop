@@ -4,7 +4,7 @@ from typing import Optional, MutableSequence, Callable
 from gi.repository import Gtk
 from injector import inject
 
-from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirerProvider
+from opendrop.app.core.imageacquisition.acquirers.filesystem import FilesystemAcquirerProvider
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from opendrop.widgets.file_chooser_button import FileChooserButton

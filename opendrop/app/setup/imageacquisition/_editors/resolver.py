@@ -1,6 +1,7 @@
 from typing import Type
 
-from opendrop.app.core.imageacquisition.acquirers import ImageAcquirerProvider, FilesystemAcquirerProvider
+from opendrop.app.core.imageacquisition.acquirers import ImageAcquirerProvider
+from opendrop.app.core.imageacquisition.acquirers.filesystem import FilesystemAcquirerProvider
 from opendrop.app.core.imageacquisition.acquirers.usbcamera import USBCameraAcquirerProvider
 from opendrop.appfw import WidgetComponent
 
