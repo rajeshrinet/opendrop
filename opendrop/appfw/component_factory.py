@@ -1,10 +1,11 @@
 from typing import Type, TypeVar, Optional
 
+from gi.repository import Gtk
 from injector import Injector, inject, Module, Binder, UnsatisfiedRequirement
 
-from .component import Component, _Component
+from .component import Component, _Component, WidgetComponent
 
-ComponentType = TypeVar('ComponentType', bound=Component)
+ComponentT = TypeVar('ComponentT', bound=Component)
 
 
 class _ComponentFactoryModule(Module):
@@ -17,7 +18,7 @@ class ComponentFactory:
     def __init__(self, injector: Injector) -> None:
         self._injector = injector
 
-    def create(self, component_cls: Type[ComponentType], **kwargs) -> ComponentType:
+    def create(self, component_cls: Type[ComponentT], **kwargs) -> ComponentT:
         component = self._injector.create_object(
             cls=component_cls,
             additional_kwargs={'additional_kwargs': kwargs},
@@ -29,6 +30,10 @@ class ComponentFactory:
             component._parent = scope
 
         return component
+
+    def create_widget(self, component_cls: Type[WidgetComponent], **kwargs) -> Gtk.Widget:
+        component = self.create(component_cls, **kwargs)
+        return component.widget
 
     @property
     def _scope(self) -> Optional[Component]:
