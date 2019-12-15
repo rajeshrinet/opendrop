@@ -1,5 +1,6 @@
 from injector import Module, Binder, inject, singleton
 
+from opendrop.app.core.config_abc import PreparationError
 from opendrop.app.core.imageacquisition_config import ImageAcquisitionConfiguratorModule
 from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 
@@ -16,8 +17,13 @@ class SetupService:
         self._image_acquisition_config = image_acquisition_config
 
     def set_up(self) -> None:
-        self._prepare_all()
-        self._install_all()
+        try:
+            self._prepare_all()
+        except PreparationError:
+            self._reset_all()
+            raise
+        else:
+            self._install_all()
 
     def _prepare_all(self) -> None:
         self._image_acquisition_config.prepare()

@@ -3,7 +3,7 @@ from typing import Type, Optional, NewType, cast
 from injector import Module, singleton, provider
 from injector import inject, Injector
 
-from opendrop.app.core.config_abc import Configurator
+from opendrop.app.core.config_abc import Configurator, PreparationError
 from opendrop.app.core.imageacquisition.acquirers import (
     ImageAcquirer,
     ImageAcquirerResolver,
@@ -34,7 +34,13 @@ class ImageAcquisitionConfiguratorService(Configurator):
         assert self._prepared_acquirer is None
 
         acquirer_provider = self.provider.get()
-        self._prepared_acquirer = acquirer_provider.get()
+
+        try:
+            prepared_acquirer = acquirer_provider.get()
+        except Exception as e:
+            raise PreparationError(cause=e)
+
+        self._prepared_acquirer = prepared_acquirer
 
     def reset(self) -> None:
         if self._prepared_acquirer is None:
