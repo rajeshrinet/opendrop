@@ -2,7 +2,7 @@ from typing import Type, TypeVar
 
 from injector import Injector, inject, Module, Binder, singleton
 
-from ._base import ImageAcquirer, ImageAcquirerProvider
+from ._abc import ImageAcquirer, ImageAcquirerProvider
 
 _ImageAcquirerT = TypeVar('_ImageAcquirerT', bound=ImageAcquirer)
 

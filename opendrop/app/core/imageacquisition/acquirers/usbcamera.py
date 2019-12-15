@@ -1,6 +1,6 @@
 from injector import Module, provider
 
-from ._base import ImageAcquirerProvider
+from ._abc import ImageAcquirerProvider
 
 
 class USBCameraAcquirerModule(Module):
