@@ -46,8 +46,8 @@ class FilesystemAcquirer:
         if not math.isfinite(frame_interval):
             raise ValueError("Expected 'frame_interval' to be finite, got '{}'".format(frame_interval))
 
-        if frame_interval < 0:
-            raise ValueError("'frame_interval' cannot be negative")
+        if frame_interval <= 0:
+            raise ValueError("'frame_interval' cannot be negative or zero")
 
 
 class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):

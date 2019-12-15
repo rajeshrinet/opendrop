@@ -20,14 +20,14 @@ def test_FilesystemAcquirer_init_with_empty_image_paths_raises_error():
         FilesystemAcquirer(image_paths=(), frame_interval=1)
 
 
-@pytest.mark.parametrize('invalid_value', (-1, math.nan, math.inf))
+@pytest.mark.parametrize('invalid_value', (-1, 0, math.nan, math.inf))
 def test_FilesystemAcquirer_init_with_invalid_frame_interval_raises_error(invalid_value: float):
     with patch('opendrop.app.core.imageacquisition.acquirers.filesystem._load_image'):
         with pytest.raises(ValueError):
             FilesystemAcquirer(image_paths=('image1', 'image2'), frame_interval=invalid_value)
 
 
-@pytest.mark.parametrize('invalid_value', (-1, math.nan, math.inf))
+@pytest.mark.parametrize('invalid_value', (-1, 0, math.nan, math.inf))
 def test_FilesystemAcquirer_init_with_single_image_path_ignores_invalid_frame_interval(invalid_value: float):
     with patch('opendrop.app.core.imageacquisition.acquirers.filesystem._load_image'):
         FilesystemAcquirer(image_paths=('image1',), frame_interval=invalid_value)
