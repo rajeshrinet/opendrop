@@ -1,6 +1,6 @@
 from injector import Module, Binder, inject, singleton
 
-from opendrop.app.core.config_abc import PreparationError
+from opendrop.app.core.config import PreparationError
 from opendrop.app.core.imageacquisition_config import ImageAcquisitionConfiguratorModule
 from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 

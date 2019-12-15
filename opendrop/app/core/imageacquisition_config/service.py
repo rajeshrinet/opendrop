@@ -3,7 +3,7 @@ from typing import Type, Optional, NewType, cast
 from injector import Module, singleton, provider
 from injector import inject, Injector
 
-from opendrop.app.core.config_abc import Configurator, PreparationError
+from opendrop.app.core.config import Configurator, PreparationError
 from opendrop.app.core.imageacquisition.acquirers import (
     ImageAcquirer,
     ImageAcquirerResolver,
