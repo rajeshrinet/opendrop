@@ -37,9 +37,9 @@ class SetupView(WidgetView):
         image_acquisition_frame = Gtk.Frame(label='Image acquisition', hexpand=True, vexpand=True)
         content_area.add(image_acquisition_frame)
 
-        image_acquisition_configurator_cmp = cf.create(ImageAcquisitionConfiguratorComponent)
-        image_acquisition_configurator_cmp.widget.props.margin = 10
-        image_acquisition_frame.add(image_acquisition_configurator_cmp.widget)
+        image_acquisition_configurator = cf.create_widget(ImageAcquisitionConfiguratorComponent)
+        image_acquisition_configurator.props.margin = 10
+        image_acquisition_frame.add(image_acquisition_configurator)
 
         continue_btn = Gtk.Button('Continue')
         continue_btn.get_style_context().add_class('suggested-action')

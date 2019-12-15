@@ -1,4 +1,4 @@
-from typing import Type, Optional, Any
+from typing import Type, Optional
 
 from gi.repository import Gtk
 from injector import inject
@@ -19,7 +19,7 @@ class ImageAcquisitionConfiguratorView(WidgetView):
     @inject
     def __init__(self, cf: ComponentFactory) -> None:
         self._cf = cf
-        self._current_editor = None  # type: Optional[WidgetComponent]
+        self._current_editor = None  # type: Optional[Gtk.Widget]
 
         body = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL, row_spacing=10)
         self.set_widget(body)
@@ -63,11 +63,11 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         if editor_cls is None:
             return
 
-        editor = self._cf.create(editor_cls, acquirer_provider=acquirer_provider)
+        editor = self._cf.create_widget(editor_cls, acquirer_provider=acquirer_provider)
         self._current_editor = editor
 
-        self._editor_container.add(editor.widget)
-        editor.widget.show()
+        self._editor_container.add(editor)
+        editor.show()
 
 
 @ImageAcquisitionConfiguratorComponent.presenter
