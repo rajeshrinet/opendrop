@@ -76,10 +76,13 @@ class SetupView(WidgetView):
             text=str(error),
         )
 
-        error_dialog.connect('response', lambda *_: error_dialog.destroy())
+        error_dialog.connect('response', self._hdl_error_dialog_response)
         error_dialog.connect('destroy', self._hdl_error_dialog_destroy)
 
         error_dialog.show()
+
+    def _hdl_error_dialog_response(self, dialog: Gtk.Widget, response: Gtk.ResponseType) -> None:
+        dialog.destroy()
 
     def _hdl_error_dialog_destroy(self, dialog: Gtk.Widget) -> None:
         self._is_showing_error = False
