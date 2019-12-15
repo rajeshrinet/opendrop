@@ -11,7 +11,7 @@ from opendrop.app.core.imageacquisition.acquirers import (
 )
 from opendrop.app.core.imageacquisition.service import ImageAcquisitionService
 from opendrop.utility.bindable import VariableBindable
-from opendrop.utility.bindable.typing import Bindable
+from opendrop.utility.bindable.typing import Bindable, ReadBindable
 
 
 class ImageAcquisitionConfiguratorService(Configurator):
@@ -20,13 +20,14 @@ class ImageAcquisitionConfiguratorService(Configurator):
         self._service = service
         self._injector = injector
 
-        self.acquirer_provider = VariableBindable(None)  # type: Bindable[Optional[ImageAcquirerProvider]]
+        self._acquirer_provider = VariableBindable(None)  # type: Bindable[Optional[ImageAcquirerProvider]]
+        self.acquirer_provider = cast(ReadBindable[Optional[ImageAcquirerProvider]], self._acquirer_provider)
 
         self._prepared_acquirer = None  # type: Optional[ImageAcquirer]
 
     def change_provider_type(self, provider_cls: Type[ImageAcquirerProvider]) -> None:
         new_provider = self._injector.get(provider_cls)
-        self.acquirer_provider.set(new_provider)
+        self._acquirer_provider.set(new_provider)
 
     def prepare(self) -> None:
         assert self._prepared_acquirer is None
