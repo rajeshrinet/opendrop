@@ -15,7 +15,14 @@ class Component:
     _presenter_cls = None  # type: Optional[Type[Presenter]]
 
     @inject
-    def __init__(self, parent_injector: Injector, *, additional_kwargs: Mapping[str, Any]) -> None:
+    def __init__(
+            self,
+            parent_injector: Optional[Injector] = None,
+            *,
+            additional_kwargs: Optional[Mapping[str, Any]] = None
+    ) -> None:
+        additional_kwargs = additional_kwargs or {}
+
         self._children_registry = ComponentChildrenRegistry()
         self._parent = None  # type: Optional[Component]
         self._is_destroyed = False
@@ -150,7 +157,7 @@ class _ComponentContextModule(Module):
 
 class WidgetComponent(Component):
     @inject
-    def __init__(self, parent_injector: Injector, **kwargs) -> None:
+    def __init__(self, parent_injector: Optional[Injector] = None, **kwargs) -> None:
         super().__init__(
             parent_injector=parent_injector,
             **kwargs
