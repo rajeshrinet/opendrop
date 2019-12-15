@@ -1,35 +1,25 @@
 from injector import Module, Binder, inject, singleton
 
 from opendrop.app.core.config import PreparationError
-from opendrop.app.core.imageacquisition_config import ImageAcquisitionConfiguratorModule
-from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
+from opendrop.app.ift.core.session_config import SessionConfiguratorModule, SessionConfiguratorService
 
 
 class SetupModule(Module):
     def configure(self, binder: Binder):
-        binder.install(ImageAcquisitionConfiguratorModule)
+        binder.install(SessionConfiguratorModule)
         binder.bind(interface=SetupService, to=SetupService, scope=singleton)
 
 
 class SetupService:
     @inject
-    def __init__(self, image_acquisition_config: ImageAcquisitionConfiguratorService) -> None:
-        self._image_acquisition_config = image_acquisition_config
+    def __init__(self, config: SessionConfiguratorService) -> None:
+        self._config = config
 
     def set_up(self) -> None:
         try:
-            self._prepare_all()
+            self._config.prepare()
         except PreparationError:
-            self._reset_all()
+            self._config.reset()
             raise
         else:
-            self._install_all()
-
-    def _prepare_all(self) -> None:
-        self._image_acquisition_config.prepare()
-
-    def _reset_all(self) -> None:
-        self._image_acquisition_config.reset()
-
-    def _install_all(self) -> None:
-        self._image_acquisition_config.install()
+            self._config.install()
