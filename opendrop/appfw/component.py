@@ -1,6 +1,7 @@
 from inspect import Signature, Parameter, signature
 from typing import Mapping, Any, MutableSequence, Callable, Iterator, Sequence, Optional, Type, NewType, cast
 
+from gi.repository import Gtk
 from injector import Injector, Binder, CallableProvider, Module, InstanceProvider, inject
 
 from opendrop.utility.events import Event
@@ -74,7 +75,7 @@ class Component:
 
     def destroy(self) -> None:
         if self._is_destroyed:
-            raise ValueError('{} is already destroyed'.format(self))
+            return
 
         self._is_destroyed = True
         self.on_destroyed.fire()
@@ -167,10 +168,14 @@ class WidgetComponent(Component):
         assert widget is not None
 
         self.widget = widget
+        self._destroy_id = widget.connect('destroy', self._hdl_widget_destroy)
+
+    def _hdl_widget_destroy(self, widget: Gtk.Widget) -> None:
+        widget.disconnect(self._destroy_id)
+        self.destroy()
 
     def destroy(self) -> None:
         super().destroy()
-
         self.widget.destroy()
 
 
