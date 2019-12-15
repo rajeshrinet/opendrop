@@ -8,7 +8,7 @@ from injector import Module, provider
 
 from opendrop.utility.bindable import VariableBindable
 from opendrop.utility.bindable.typing import Bindable
-from .base import ImageAcquirerProvider
+from ._base import ImageAcquirerProvider
 
 
 class EmptyPathsError(ValueError):
