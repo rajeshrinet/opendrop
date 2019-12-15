@@ -1,8 +1,5 @@
-from typing import Type, Union
-
-
 class PreparationError(Exception):
-    def __init__(self, *args, cause: Union[Exception, Type[Exception]]) -> None:
+    def __init__(self, *args, cause: Exception) -> None:
         super().__init__(*args)
         self.cause = cause
 
