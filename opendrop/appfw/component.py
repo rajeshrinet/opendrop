@@ -137,7 +137,7 @@ class ComponentChildrenRegistry:
         )
 
 
-_Component = NewType('_Component', Component)
+_ThisComponent = NewType('_ThisComponent', Component)
 
 
 class _ComponentContextModule(Module):
@@ -146,7 +146,7 @@ class _ComponentContextModule(Module):
 
     def configure(self, binder: Binder) -> None:
         binder.bind(
-            interface=_Component,
+            interface=_ThisComponent,
             to=InstanceProvider(self._component)
         )
 

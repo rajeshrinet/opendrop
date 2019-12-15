@@ -3,7 +3,7 @@ from typing import Type, TypeVar, Optional
 from gi.repository import Gtk
 from injector import Injector, inject, Module, Binder, UnsatisfiedRequirement
 
-from .component import Component, _Component, WidgetComponent
+from .component import Component, _ThisComponent, WidgetComponent
 
 ComponentT = TypeVar('ComponentT', bound=Component)
 
@@ -38,7 +38,7 @@ class ComponentFactory:
     @property
     def _scope(self) -> Optional[Component]:
         try:
-            scope = self._injector.get(_Component)
+            scope = self._injector.get(_ThisComponent)
         except UnsatisfiedRequirement:
             scope = None
 

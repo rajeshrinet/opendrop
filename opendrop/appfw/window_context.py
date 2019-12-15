@@ -3,7 +3,7 @@ from typing import Optional
 from gi.repository import Gtk
 from injector import inject, Module, Binder
 
-from .component import WidgetComponent, _Component
+from .component import WidgetComponent, _ThisComponent
 
 
 class _WindowContextModule(Module):
@@ -13,7 +13,7 @@ class _WindowContextModule(Module):
 
 class WindowContext:
     @inject
-    def __init__(self, scope: _Component) -> None:
+    def __init__(self, scope: _ThisComponent) -> None:
         self._scope = scope
 
     @property
