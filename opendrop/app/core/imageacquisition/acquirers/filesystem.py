@@ -19,6 +19,12 @@ class UnknownImageTypeError(OSError):
     """Raised when trying to load an image of unknown type."""
 
 
+class FilesystemAcquirerModule(Module):
+    @provider
+    def acquirer_provider(self) -> 'ImageAcquirerProvider[FilesystemAcquirer]':
+        return FilesystemAcquirerProvider()
+
+
 class FilesystemAcquirer:
     def __init__(self, image_paths: Sequence[Path], frame_interval: float) -> None:
         self._check_image_paths(image_paths)
@@ -57,12 +63,6 @@ class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):
             image_paths=image_paths,
             frame_interval=frame_interval,
         )
-
-
-class FilesystemAcquirerModule(Module):
-    @provider
-    def acquirer_provider(self) -> ImageAcquirerProvider[FilesystemAcquirer]:
-        return FilesystemAcquirerProvider()
 
 
 def _load_image(path: Union[Path, str]) -> np.ndarray:

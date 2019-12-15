@@ -48,7 +48,7 @@ setup(
         'pytest',
         'setuptools',
         'typing_extensions',
-        'injector',
+        'injector>=0.18.2',
         'Pillow',
     ]
 )
