@@ -61,7 +61,7 @@ class FilesystemAcquirerProvider(ImageAcquirerProvider[FilesystemAcquirer]):
 
 class FilesystemAcquirerModule(Module):
     @provider
-    def acquirer_provider(self) -> FilesystemAcquirerProvider:
+    def acquirer_provider(self) -> ImageAcquirerProvider[FilesystemAcquirer]:
         return FilesystemAcquirerProvider()
 
 

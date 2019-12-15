@@ -14,5 +14,5 @@ class USBCameraAcquirerProvider(ImageAcquirerProvider[USBCameraAcquirer]):
 
 class USBCameraAcquirerModule(Module):
     @provider
-    def acquirer_provider(self) -> USBCameraAcquirerProvider:
+    def acquirer_provider(self) -> ImageAcquirerProvider[USBCameraAcquirer]:
         return USBCameraAcquirerProvider()

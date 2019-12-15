@@ -3,7 +3,7 @@ from typing import Type, Optional, Any
 from gi.repository import Gtk
 from injector import inject
 
-from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirerProvider, USBCameraAcquirerProvider
+from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirer, USBCameraAcquirer, ImageAcquirerProvider
 from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
@@ -34,8 +34,8 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         imgsrc_div.add(imgsrc_combobox)
 
         # Combobox option id's must be strings
-        imgsrc_combobox.append(id=FilesystemAcquirerProvider.__name__, text='Filesystem')
-        imgsrc_combobox.append(id=USBCameraAcquirerProvider.__name__, text='USB Camera')
+        imgsrc_combobox.append(id=FilesystemAcquirer.__name__, text='Filesystem')
+        imgsrc_combobox.append(id=USBCameraAcquirer.__name__, text='USB Camera')
 
         editor_container = Gtk.Grid()
         body.add(editor_container)
@@ -56,10 +56,8 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         self._current_editor.destroy()
         self._current_editor = None
 
-    def change_editor_type(self, editor_cls: Optional[Type[WidgetComponent]], acquirer_provider: Any) -> None:
-        if editor_cls is not None and isinstance(self._current_editor, editor_cls):
-            return
-
+    def change_editor_type(self, editor_cls: Optional[Type[WidgetComponent]], acquirer_provider: ImageAcquirerProvider)\
+            -> None:
         self._clear_editor()
 
         if editor_cls is None:
@@ -87,16 +85,16 @@ class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfigurat
 
         connections = [
             self._view.imgsrc_combobox_selection.on_changed.connect(self._hdl_imgsrc_combobox_selection_changed),
-            self._service.acquirer_provider.on_changed.connect(self._hdl_acquirer_provider_changed),
+            self._service.provider.on_changed.connect(self._hdl_provider_changed),
         ]
         self._before_view_destroy_cleanup_tasks += (
             conn.disconnect for conn in connections
         )
 
-        self._hdl_acquirer_provider_changed()
+        self._hdl_provider_changed()
 
-    def _hdl_acquirer_provider_changed(self) -> None:
-        acquirer_provider = self._service.acquirer_provider.get()
+    def _hdl_provider_changed(self) -> None:
+        acquirer_provider = self._service.provider.get()
 
         try:
             editor_cls = self._resolver.resolve(acquirer_provider)
@@ -105,23 +103,23 @@ class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfigurat
 
         self._view.change_editor_type(editor_cls, acquirer_provider=acquirer_provider)
 
-        provider_cls = type(acquirer_provider)
-        self._view.imgsrc_combobox_selection.set(provider_cls.__name__)
+        acquirer_cls = acquirer_provider.provides
+        self._view.imgsrc_combobox_selection.set(acquirer_cls.__name__)
 
     def _hdl_imgsrc_combobox_selection_changed(self) -> None:
         selection = self._view.imgsrc_combobox_selection.get()
         if selection is None:
             return
 
-        new_provider_cls = eval(selection)
+        new_acquirer_cls = eval(selection)
 
-        current_provider = self._service.acquirer_provider.get()
-        current_provider_cls = type(current_provider)
+        current_provider = self._service.provider.get()
+        current_acquirer_cls = current_provider.provides
 
-        if new_provider_cls is current_provider_cls:
+        if new_acquirer_cls is current_acquirer_cls:
             return
 
-        self._service.change_provider_type(new_provider_cls)
+        self._service.change_acquirer_type(new_acquirer_cls)
 
     def before_view_destroy(self) -> None:
         for f in self._before_view_destroy_cleanup_tasks:

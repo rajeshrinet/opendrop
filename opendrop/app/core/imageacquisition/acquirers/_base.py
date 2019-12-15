@@ -1,4 +1,5 @@
-from typing import Generic, TypeVar
+from abc import abstractmethod
+from typing import Generic, TypeVar, Type, get_type_hints
 
 
 class ImageAcquirer:
@@ -10,5 +11,11 @@ T = TypeVar('T', bound=ImageAcquirer)
 
 
 class ImageAcquirerProvider(Generic[T]):
+    @abstractmethod
     def get(self) -> T:
         """Provide the ImageAcquirer object."""
+
+    @property
+    def provides(self) -> Type[T]:
+        annotations = get_type_hints(self.get)
+        return annotations['return']
