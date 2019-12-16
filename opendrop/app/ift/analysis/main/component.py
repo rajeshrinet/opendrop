@@ -10,7 +10,7 @@ class MainComponent(WidgetComponent):
 @MainComponent.view
 class MainView(WidgetView):
     def __init__(self) -> None:
-        window = Gtk.Window(title='Interfacial Tension')
+        window = Gtk.Window(title='Interfacial Tension', window_position=Gtk.WindowPosition.CENTER)
         self.set_widget(window)
 
 

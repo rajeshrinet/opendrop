@@ -2,6 +2,7 @@ from typing import Optional
 
 from injector import inject
 
+from opendrop.app.ift.analysis.component import AnalysisComponent
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
 from . import IFTModule
 from .service import IFTService
@@ -46,18 +47,26 @@ class IFTView(View):
         self._set_activity(setup_cmp)
         setup_cmp.widget.show()
 
+    def show_analysis(self) -> None:
+        analysis_cmp = self._cf.create(
+            AnalysisComponent
+        )
+        self._set_activity(analysis_cmp)
+
 
 @IFTComponent.presenter
 class IFTPresenter(Presenter[IFTView]):
     @inject
     def __init__(self, service: IFTService) -> None:
         self._service = service
+        self._view = None  # type: Optional[IFTView]
 
     def after_view_init(self, view: IFTView) -> None:
-        view.show_setup()
+        self._view = view
+        self._view.show_setup()
 
     def hdl_setup_success(self) -> None:
-        print('setup success')
+        self._view.show_analysis()
 
     def hdl_setup_cancel(self) -> None:
         self._service.back()
