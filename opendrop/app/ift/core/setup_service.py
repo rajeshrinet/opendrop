@@ -3,7 +3,7 @@ from typing import Optional
 from injector import Module, Binder, inject, singleton
 
 from opendrop.app.core.config import PreparationError
-from opendrop.app.ift.core.session_config import SessionConfiguratorModule, SessionConfiguratorService
+from opendrop.app.ift.core.session_config_service import SessionConfiguratorModule, SessionConfiguratorService
 
 
 class SetupModule(Module):
