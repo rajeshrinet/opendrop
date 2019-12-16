@@ -5,6 +5,7 @@ from injector import Module, Binder, inject, singleton
 from opendrop.app.core.config import PreparationError
 from opendrop.app.ift.core import SessionConfiguratorModule
 from opendrop.app.ift.core.session_config_service import SessionConfiguratorService
+from opendrop.app.ift.core.session_service import SessionService
 
 
 class SetupModule(Module):
@@ -15,14 +16,14 @@ class SetupModule(Module):
 
 class SetupService:
     @inject
-    def __init__(self, config: SessionConfiguratorService) -> None:
-        self._config = config
+    def __init__(self, session_service: SessionService, config_service: SessionConfiguratorService) -> None:
+        self._session_service = session_service
+        self._config_service = config_service
 
     def set_up(self) -> Optional[Exception]:
         try:
-            self._config.prepare()
+            installer = self._config_service.prepare()
         except PreparationError as e:
-            self._config.reset()
             return e.cause
         else:
-            self._config.install()
+            installer.install(self._session_service)

@@ -14,4 +14,4 @@ class SessionModule(Module):
 class SessionService:
     @inject
     def __init__(self, image_acquisition_service: ImageAcquisitionService) -> None:
-        self._image_acquisition_service = image_acquisition_service
+        self.image_acquisition_service = image_acquisition_service

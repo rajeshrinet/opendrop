@@ -6,7 +6,7 @@ from .filesystem import FilesystemAcquirerModule, FilesystemAcquirer
 from .usbcamera import USBCameraAcquirerModule, USBCameraAcquirer
 
 
-class _AcquirersModule(Module):
+class ImageAcquirersModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.install(FilesystemAcquirerModule)
         binder.install(USBCameraAcquirerModule)

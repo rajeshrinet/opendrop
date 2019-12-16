@@ -1,24 +1,24 @@
 from typing import Type, Optional, NewType, cast
 
-from injector import Module, singleton, provider
+from injector import Module, singleton, provider, Binder
 from injector import inject, Injector
 
-from opendrop.app.core.config import Configurator, PreparationError
+from opendrop.app.core.config import Configurator, PreparationError, Installer
 from opendrop.app.core.imageacquisition.acquirers import (
-    ImageAcquirer,
+    ImageAcquirersModule,
     ImageAcquirerResolver,
     ImageAcquirerProvider,
-    FilesystemAcquirer
+    ImageAcquirer,
+    FilesystemAcquirer,
 )
 from opendrop.app.core.imageacquisition.service import ImageAcquisitionService
 from opendrop.utility.bindable import VariableBindable
 from opendrop.utility.bindable.typing import Bindable, ReadBindable
 
 
-class ImageAcquisitionConfiguratorService(Configurator):
+class ImageAcquisitionConfiguratorService(Configurator[ImageAcquisitionService]):
     @inject
-    def __init__(self, service: ImageAcquisitionService, resolver: ImageAcquirerResolver) -> None:
-        self._service = service
+    def __init__(self, resolver: ImageAcquirerResolver) -> None:
         self._resolver = resolver
 
         self._provider = VariableBindable(None)  # type: Bindable[Optional[ImageAcquirerProvider]]
@@ -30,7 +30,7 @@ class ImageAcquisitionConfiguratorService(Configurator):
         new_provider = self._resolver.resolve(acquirer_cls)
         self._provider.set(new_provider)
 
-    def prepare(self) -> None:
+    def prepare(self) -> 'ImageAcquisitionInstaller':
         assert self._prepared_acquirer is None
 
         acquirer_provider = self.provider.get()
@@ -40,28 +40,35 @@ class ImageAcquisitionConfiguratorService(Configurator):
         except Exception as e:
             raise PreparationError(cause=e)
 
-        self._prepared_acquirer = prepared_acquirer
+        return ImageAcquisitionInstaller(prepared_acquirer)
 
-    def reset(self) -> None:
-        if self._prepared_acquirer is None:
+
+class ImageAcquisitionInstaller(Installer[ImageAcquisitionService]):
+    def __init__(self, acquirer: ImageAcquirer) -> None:
+        self._acquirer = acquirer
+
+    def install(self, target: ImageAcquisitionService) -> None:
+        if self._acquirer is None:
+            raise ValueError('Installer has already been used')
+
+        target.use_acquirer(self._acquirer)
+        self._acquirer = None
+
+    def destroy(self) -> None:
+        if self._acquirer is None:
             return
 
-        prepared_acquirer = self._prepared_acquirer
-        self._prepared_acquirer = None
-        prepared_acquirer.destroy()
-
-    def install(self) -> None:
-        assert self._prepared_acquirer is not None
-
-        prepared_acquirer = self._prepared_acquirer
-        self._prepared_acquirer = None
-        self._service.use_acquirer(prepared_acquirer)
+        self._acquirer.destroy()
+        self._acquirer = None
 
 
 _DefaultAcquirerType = NewType('_DefaultAcquirerType', Type[ImageAcquirer])
 
 
 class ImageAcquisitionConfiguratorModule(Module):
+    def configure(self, binder: Binder) -> None:
+        binder.install(ImageAcquirersModule)
+
     @singleton
     @provider
     def service(self, injector: Injector, default_acquirer_type: _DefaultAcquirerType)\

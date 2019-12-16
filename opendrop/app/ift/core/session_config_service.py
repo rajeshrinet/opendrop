@@ -1,8 +1,14 @@
+from typing import MutableMapping
+
 from injector import inject, Module, Binder, singleton
 
-from opendrop.app.core.config import Configurator
+from opendrop.app.core.config import Configurator, Installer, PreparationError
 from opendrop.app.core.imageacquisition_config import ImageAcquisitionConfiguratorModule
-from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
+from opendrop.app.core.imageacquisition_config.service import (
+    ImageAcquisitionConfiguratorService,
+    ImageAcquisitionInstaller,
+)
+from .session_service import SessionService
 
 
 class SessionConfiguratorModule(Module):
@@ -12,16 +18,31 @@ class SessionConfiguratorModule(Module):
         binder.bind(interface=SessionConfiguratorService, to=SessionConfiguratorService, scope=singleton)
 
 
-class SessionConfiguratorService(Configurator):
+class SessionConfiguratorService(Configurator[SessionService]):
     @inject
     def __init__(self, image_acquisition_config: ImageAcquisitionConfiguratorService) -> None:
         self._image_acquisition_config = image_acquisition_config
 
-    def prepare(self) -> None:
-        self._image_acquisition_config.prepare()
+    def prepare(self) -> 'SessionInstaller':
+        installers = {}  # type: MutableMapping[str, Installer]
 
-    def reset(self) -> None:
-        self._image_acquisition_config.reset()
+        try:
+            installers['image_acquisition_installer'] = self._image_acquisition_config.prepare()
+        except PreparationError:
+            for installer in installers.values():
+                installer.destroy()
 
-    def install(self) -> None:
-        self._image_acquisition_config.install()
+            raise
+
+        return SessionInstaller(**installers)
+
+
+class SessionInstaller(Installer[SessionService]):
+    def __init__(self, image_acquisition_installer: ImageAcquisitionInstaller):
+        self._image_acquisition_installer = image_acquisition_installer
+
+    def install(self, target: SessionService) -> None:
+        self._image_acquisition_installer.install(target.image_acquisition_service)
+
+    def destroy(self) -> None:
+        self._image_acquisition_installer.destroy()
