@@ -13,10 +13,10 @@ from .window_context import _WindowContextModule
 class Bootstrap(Program):
     modules = [_EventLoopModule, _ComponentFactoryModule, _WindowContextModule]
 
-    def __init__(self, entry_component_cls: Type[Component]) -> None:
+    def __init__(self, entry: Type[Component]) -> None:
         super().__init__()
 
-        self._entry_component_cls = entry_component_cls
+        self._entry = entry
 
         self._root_component = None  # type: Optional[Component]
 
@@ -30,7 +30,7 @@ class Bootstrap(Program):
     def main(self, cf: ComponentFactory, loop: asyncio.AbstractEventLoop) -> None:
         self._stop_flag = asyncio.Event(loop=loop)
 
-        self._root_component = cf.create(self._entry_component_cls)
+        self._root_component = cf.create(self._entry)
 
         loop.run_until_complete(self._stop_flag.wait())
 
