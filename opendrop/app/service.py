@@ -1,6 +1,8 @@
+from typing import Type
+
 from injector import Binder, Module, inject, singleton
 
-from opendrop.appfw import QuitService
+from opendrop.appfw import QuitService, Component
 from opendrop.utility.events import Event
 
 
@@ -11,21 +13,13 @@ class AppModule(Module):
 
 class AppService:
     @inject
-    def __init__(self, quit_service: QuitService) -> None:
-        self._quit_service = quit_service
+    def __init__(self, quitter: QuitService) -> None:
+        self._quitter = quitter
 
-        self.on_show_start = Event()
-        self.on_new_ift_session = Event()
-        self.on_new_conan_session = Event()
+        self.on_start_activity = Event()
 
-    def show_start(self) -> None:
-        self.on_show_start.fire()
-
-    def new_ift_session(self) -> None:
-        self.on_new_ift_session.fire()
-
-    def new_conan_session(self) -> None:
-        self.on_new_conan_session.fire()
+    def start_activity(self, component_cls: Type[Component], **kwargs) -> None:
+        self.on_start_activity.fire(component_cls, kwargs)
 
     def quit(self) -> None:
-        self._quit_service.quit()
+        self._quitter.quit()

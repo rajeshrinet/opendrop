@@ -1,9 +1,8 @@
-from typing import Optional
+from typing import Optional, Type, Mapping, Any
 
 from injector import inject
 
-from opendrop.appfw import Component, View, Presenter, ComponentFactory
-from .ift.component import IFTComponent
+from opendrop.appfw import Component, View, Presenter, ComponentFactory, WidgetComponent
 from .service import AppModule, AppService
 from .start.component import StartComponent
 
@@ -35,22 +34,18 @@ class AppView(View):
 
         self._activity = activity
 
-    def show_start(self) -> None:
-        start_cmp = self._cf.create(StartComponent)
-        self._set_activity(start_cmp)
+    def start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
+        component = self._cf.create(component_cls, **kwargs)
+        self._set_activity(component)
 
-        start_cmp.widget.show()
-
-    def new_ift_session(self) -> None:
-        ift_cmp = self._cf.create(IFTComponent)
-        self._set_activity(ift_cmp)
-
-    def new_conan_session(self) -> None:
-        print('new_conan_session()')
+        if isinstance(component, WidgetComponent):
+            component.widget.show()
 
 
 @AppComponent.presenter
 class AppPresenter(Presenter):
+    ENTRY_ACTIVITY = StartComponent
+
     @inject
     def __init__(self, service: AppService) -> None:
         self._service = service
@@ -62,9 +57,7 @@ class AppPresenter(Presenter):
         self._view = view
 
         connections = [
-            self._service.on_show_start.connect(self._hdl_show_start),
-            self._service.on_new_ift_session.connect(self._hdl_new_ift_session),
-            self._service.on_new_conan_session.connect(self._hdl_new_conan_session),
+            self._service.on_start_activity.connect(self._hdl_start_activity),
         ]
 
         self._before_view_destroy_cleanup_tasks += (
@@ -72,16 +65,10 @@ class AppPresenter(Presenter):
             for conn in connections
         )
 
-        view.show_start()
+        self._hdl_start_activity(self.ENTRY_ACTIVITY, {})
 
-    def _hdl_show_start(self) -> None:
-        self._view.show_start()
-
-    def _hdl_new_ift_session(self) -> None:
-        self._view.new_ift_session()
-
-    def _hdl_new_conan_session(self) -> None:
-        self._view.new_conan_session()
+    def _hdl_start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
+        self._view.start_activity(component_cls, kwargs)
 
     def before_view_destroy(self) -> None:
         for f in self._before_view_destroy_cleanup_tasks:

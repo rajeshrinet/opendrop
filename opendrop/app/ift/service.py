@@ -16,7 +16,8 @@ class IFTService:
         self._app_service = app_service
 
     def back(self) -> None:
-        self._app_service.show_start()
+        from opendrop.app.start.component import StartComponent
+        self._app_service.start_activity(StartComponent)
 
     def quit(self) -> None:
         self._app_service.quit()

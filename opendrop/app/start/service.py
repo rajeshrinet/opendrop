@@ -14,10 +14,11 @@ class StartService:
         self._app_service = app_service
 
     def new_ift_session(self) -> None:
-        self._app_service.new_ift_session()
+        from opendrop.app.ift.component import IFTComponent
+        self._app_service.start_activity(IFTComponent)
 
     def new_conan_session(self) -> None:
-        self._app_service.new_conan_session()
+        print('new_conan_session()')
 
     def close(self) -> None:
         self._app_service.quit()
