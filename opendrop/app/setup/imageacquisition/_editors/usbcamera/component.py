@@ -1,7 +1,7 @@
 from gi.repository import Gtk
 from injector import inject
 
-from opendrop.app.core.imageacquisition.acquirers.usbcamera import USBCameraAcquirerProvider
+from opendrop.app.core.imageacquirer.usbcamera import USBCameraAcquirerProvider
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter
 from opendrop.widgets.float_entry import FloatEntry
 

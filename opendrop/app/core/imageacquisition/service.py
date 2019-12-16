@@ -1,6 +1,6 @@
-from typing import Any
-
 from injector import Module, Binder, singleton
+
+from opendrop.app.core.imageacquirer import ImageAcquirer
 
 
 class ImageAcquisitionModule(Module):
@@ -13,6 +13,6 @@ class ImageAcquisitionService:
         self.is_ready = False
         self.acquirer = None
 
-    def use_acquirer(self, acquirer: Any) -> None:
+    def use_acquirer(self, acquirer: ImageAcquirer) -> None:
         self.acquirer = acquirer
         self.is_ready = True

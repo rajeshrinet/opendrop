@@ -3,7 +3,7 @@ from typing import Type, Optional
 from gi.repository import Gtk
 from injector import inject
 
-from opendrop.app.core.imageacquisition.acquirers import FilesystemAcquirer, USBCameraAcquirer, ImageAcquirerProvider
+from opendrop.app.core.imageacquirer import FilesystemAcquirer, USBCameraAcquirer, ImageAcquirerProvider
 from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
