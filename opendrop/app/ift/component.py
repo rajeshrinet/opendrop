@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.ift.core.session import SessionService
+from opendrop.app.ift.session import SessionService
 from opendrop.appfw import Presenter, ComponentFactory, WidgetView, WidgetComponent
 from . import _IFTModule
 from .service import IFTService

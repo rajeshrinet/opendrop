@@ -3,8 +3,8 @@ from typing import Optional
 from injector import Module, Binder, inject, singleton, provider
 
 from opendrop.app.core.imageacquirer import ImageAcquirer
+from opendrop.app.ift.session import SessionService
 from opendrop.appfw import ActivityControllerService, QuitService
-from .core.session import SessionService
 
 
 class IFTModule(Module):
