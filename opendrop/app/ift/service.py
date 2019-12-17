@@ -3,7 +3,7 @@ from typing import Optional
 from injector import Module, Binder, inject, singleton, provider
 
 from opendrop.app.core.imageacquirer import ImageAcquirer
-from opendrop.app.ift.session import SessionService
+from opendrop.app.ift.session import IFTSession
 from opendrop.appfw import ActivityControllerService, QuitService
 
 
@@ -12,13 +12,13 @@ class IFTModule(Module):
         binder.bind(interface=IFTService, to=IFTService, scope=singleton)
 
     @provider
-    def session(self, root: 'IFTService') -> SessionService:
+    def session(self, root: 'IFTService') -> IFTSession:
         session = root._session
         assert session is not None
         return session
 
     @provider
-    def image_acquirer(self, session: SessionService) -> ImageAcquirer:
+    def image_acquirer(self, session: IFTSession) -> ImageAcquirer:
         return session.image_acquirer
 
 
@@ -27,9 +27,9 @@ class IFTService:
     def __init__(self, activity_controller: ActivityControllerService, quitter: QuitService) -> None:
         self._activity_controller = activity_controller
         self._quitter = quitter
-        self._session = None  # type: Optional[SessionService]
+        self._session = None  # type: Optional[IFTSession]
 
-    def set_session(self, session: SessionService) -> None:
+    def set_session(self, session: IFTSession) -> None:
         assert self._session is None
         self._session = session
 

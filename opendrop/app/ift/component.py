@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.ift.session import SessionService
+from opendrop.app.ift.session import IFTSession
 from opendrop.appfw import Presenter, ComponentFactory, WidgetView, WidgetComponent
 from . import _IFTModule
 from .service import IFTService
@@ -34,7 +34,7 @@ class IFTView(WidgetView):
 @IFTComponent.presenter
 class IFTPresenter(Presenter[IFTView]):
     @inject
-    def __init__(self, service: IFTService, *, session: SessionService) -> None:
+    def __init__(self, service: IFTService, *, session: IFTSession) -> None:
         self._service = service
         self._service.set_session(session)
 
