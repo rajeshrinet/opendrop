@@ -2,7 +2,7 @@ from typing import MutableMapping
 
 from injector import inject, Module, Binder, singleton
 
-from opendrop.app.core.config import Configurator, Installer, PreparationError
+from opendrop.app.core.configurator import Configurator, Installer, PreparationError
 from opendrop.app.core.imageacquisition_config import ImageAcquisitionConfiguratorModule
 from opendrop.app.core.imageacquisition_config.service import (
     ImageAcquisitionConfiguratorService,
