@@ -1,75 +1,42 @@
-from typing import Optional
-
+from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.ift.analysis.component import AnalysisComponent
-from opendrop.appfw import Component, View, Presenter, ComponentFactory
-from . import IFTModule
-from .config.component import SetupComponent
+from opendrop.app.ift.core.session import SessionService
+from opendrop.appfw import Presenter, ComponentFactory, WidgetView, WidgetComponent
+from . import _IFTModule
 from .service import IFTService
 
 
-class IFTComponent(Component):
-    modules = [IFTModule]
+class IFTComponent(WidgetComponent):
+    modules = [_IFTModule]
 
 
 @IFTComponent.view
-class IFTView(View):
+class IFTView(WidgetView):
     @inject
     def __init__(self, presenter: 'IFTPresenter', cf: ComponentFactory) -> None:
         self._presenter = presenter
         self._cf = cf
-        self._activity = None  # type: Optional[Component]
 
-    def _clear_activity(self) -> None:
-        activity = self._activity
-        if activity is None:
-            return
+        window = Gtk.Window(title='Interfacial Tension', window_position=Gtk.WindowPosition.CENTER)
+        self.set_widget(window)
 
-        self._activity = None
-        activity.destroy()
+        window.connect('delete-event', self._hdl_window_delete_event)
+        window.show()
 
-    def _set_activity(self, activity: Component) -> None:
-        self._clear_activity()
+    def _hdl_window_delete_event(self, window: Gtk.Window, data: Gdk.Event) -> bool:
+        self._presenter.hdl_window_close()
 
-        if activity is None:
-            return
-
-        self._activity = activity
-
-    def show_setup(self) -> None:
-        setup_cmp = self._cf.create(
-            SetupComponent,
-            on_success=self._presenter.hdl_setup_success,
-            on_cancel=self._presenter.hdl_setup_cancel,
-            on_close=self._presenter.hdl_setup_close,
-        )
-        self._set_activity(setup_cmp)
-        setup_cmp.widget.show()
-
-    def show_analysis(self) -> None:
-        analysis_cmp = self._cf.create(
-            AnalysisComponent
-        )
-        self._set_activity(analysis_cmp)
+        # return True to prevent window from closing.
+        return True
 
 
 @IFTComponent.presenter
 class IFTPresenter(Presenter[IFTView]):
     @inject
-    def __init__(self, service: IFTService) -> None:
+    def __init__(self, service: IFTService, *, session: SessionService) -> None:
         self._service = service
-        self._view = None  # type: Optional[IFTView]
+        self._service.set_session(session)
 
-    def after_view_init(self, view: IFTView) -> None:
-        self._view = view
-        self._view.show_setup()
-
-    def hdl_setup_success(self) -> None:
-        self._view.show_analysis()
-
-    def hdl_setup_cancel(self) -> None:
+    def hdl_window_close(self) -> None:
         self._service.back()
-
-    def hdl_setup_close(self) -> None:
-        self._service.quit()

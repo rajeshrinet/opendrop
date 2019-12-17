@@ -1,6 +1,6 @@
 from injector import Module, Binder, inject
 
-from opendrop.appfw import ActivityControllerService, QuitService
+from opendrop.appfw import QuitService
 
 
 class StartModule(Module):
@@ -10,16 +10,8 @@ class StartModule(Module):
 
 class StartService:
     @inject
-    def __init__(self, activity_controller: ActivityControllerService, quitter: QuitService) -> None:
-        self._activity_controller = activity_controller
+    def __init__(self, quitter: QuitService) -> None:
         self._quitter = quitter
-
-    def new_ift_session(self) -> None:
-        from opendrop.app.ift.component import IFTComponent
-        self._activity_controller.start_activity(IFTComponent)
-
-    def new_conan_session(self) -> None:
-        print('new_conan_session()')
 
     def close(self) -> None:
         self._quitter.quit()

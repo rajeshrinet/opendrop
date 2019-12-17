@@ -4,10 +4,10 @@ from gi.repository import Gtk
 from injector import inject
 
 from opendrop.app.core.imageacquirer import FilesystemAcquirer, USBCameraAcquirer, ImageAcquirerProvider
-from opendrop.app.core.imageacquisition_config.service import ImageAcquisitionConfiguratorService
+from opendrop.app.core.image_acquisition_setup import ImageAcquisitionSetupService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
-from ._editors import EditorsModule, EditorResolver, UnknownImageAcquirerProvider
+from .editors import EditorsModule, EditorResolver, UnknownImageAcquirerProvider
 
 
 class ImageAcquisitionConfiguratorComponent(WidgetComponent):
@@ -73,7 +73,7 @@ class ImageAcquisitionConfiguratorView(WidgetView):
 @ImageAcquisitionConfiguratorComponent.presenter
 class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfiguratorView]):
     @inject
-    def __init__(self, service: ImageAcquisitionConfiguratorService, resolver: EditorResolver) -> None:
+    def __init__(self, service: ImageAcquisitionSetupService, resolver: EditorResolver) -> None:
         self._service = service
         self._resolver = resolver
 

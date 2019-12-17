@@ -14,11 +14,11 @@ class EditorResolver:
     @staticmethod
     def resolve(acquirer_provider: ImageAcquirerProvider) -> Type[WidgetComponent]:
         if isinstance(acquirer_provider, FilesystemAcquirerProvider):
-            from .filesystem.component import FilesystemEditorComponent
+            from .filesystem import FilesystemEditorComponent
             return FilesystemEditorComponent
 
         if isinstance(acquirer_provider, USBCameraAcquirerProvider):
-            from .usbcamera.component import USBCameraEditorComponent
+            from .usbcamera import USBCameraEditorComponent
             return USBCameraEditorComponent
 
         raise UnknownImageAcquirerProvider('No editor found for {!r}'.format(acquirer_provider))

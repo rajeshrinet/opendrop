@@ -27,7 +27,7 @@
 # with this software.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from opendrop.app.start.component import StartComponent
+from opendrop.app.start import StartComponent
 from opendrop.appfw import Bootstrap, activitycontroller
 
 

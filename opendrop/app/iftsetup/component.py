@@ -1,35 +1,34 @@
-from typing import Optional, Callable, Any
+from typing import Optional
 
 from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.commonconfig.imageacquisition.component import ImageAcquisitionConfiguratorComponent
-from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
+from opendrop.app.commonsetup.imageacquisition import ImageAcquisitionConfiguratorComponent
+from opendrop.app.core.imageacquirer.filesystem import EmptyPathsError
+from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
 from opendrop.widgets.error_dialog import ErrorDialog
-from . import SetupModule
-from .service import SetupService
+from . import _IFTSetupModule
+from .service import IFTSetupService
 
 
-class SetupComponent(WidgetComponent):
-    modules = [SetupModule]
+class IFTSetupComponent(WidgetComponent):
+    modules = [_IFTSetupModule]
 
 
-@SetupComponent.view
-class SetupView(WidgetView):
+@IFTSetupComponent.view
+class IFTSetupView(WidgetView):
     @inject
-    def __init__(self, presenter: 'SetupPresenter', cf: ComponentFactory) -> None:
+    def __init__(self, presenter: 'IFTSetupPresenter', window_ctx: WindowContext, cf: ComponentFactory) -> None:
         self._presenter = presenter
-
-        window = Gtk.Window(title='Interfacial Tension Setup',  window_position=Gtk.WindowPosition.CENTER)
-        self.set_widget(window)
+        self._window_ctx = window_ctx
 
         body = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
-        window.add(body)
+        self.set_widget(body)
 
         content_area = Gtk.Grid(hexpand=True, vexpand=True, margin=5)
         body.add(content_area)
 
-        body.add(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
+        # body.add(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
         action_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, hexpand=True, spacing=5, margin=5)
         body.add(action_area)
@@ -44,17 +43,14 @@ class SetupView(WidgetView):
         continue_btn = Gtk.Button('Continue')
         continue_btn.get_style_context().add_class('suggested-action')
         action_area.pack_end(continue_btn, expand=False, fill=False, padding=0)
-
-        cancel_btn = Gtk.Button('Cancel')
-        action_area.pack_end(cancel_btn, expand=False, fill=False, padding=0)
+        #
+        # cancel_btn = Gtk.Button('Cancel')
+        # action_area.pack_end(cancel_btn, expand=False, fill=False, padding=0)
 
         continue_btn.connect('clicked', lambda *_: self._presenter.hdl_continue_btn_clicked())
-        cancel_btn.connect('clicked', lambda *_: self._presenter.hdl_cancel_btn_clicked())
-        window.connect('delete-event', self._hdl_window_delete_event)
+        # cancel_btn.connect('clicked', lambda *_: self._presenter.hdl_cancel_btn_clicked())
 
-        window.foreach(Gtk.Widget.show_all)
-
-        self._window = window
+        body.foreach(Gtk.Widget.show_all)
 
     def _hdl_window_delete_event(self, window: Gtk.Window, data: Gdk.Event) -> bool:
         self._presenter.hdl_window_close()
@@ -64,16 +60,22 @@ class SetupView(WidgetView):
 
     _is_showing_error = False
 
-    def show_error(self, error: Any) -> None:
+    def show_error(self, error: Exception) -> None:
+        error_text = ''
+        if isinstance(error, EmptyPathsError):
+            error_text = 'Image files cannot be empty.'
+        else:
+            raise error
+
         if self._is_showing_error:
             return
 
         self._is_showing_error = True
 
         error_dialog = ErrorDialog(
-            parent=self._window,
+            parent=self._window_ctx.window,
             title='Error',
-            text=str(error),
+            text=error_text,
         )
 
         error_dialog.connect('response', self._hdl_error_dialog_response)
@@ -88,31 +90,19 @@ class SetupView(WidgetView):
         self._is_showing_error = False
 
 
-@SetupComponent.presenter
-class SetupPresenter(Presenter['SetupView']):
+@IFTSetupComponent.presenter
+class IFTSetupPresenter(Presenter[IFTSetupView]):
     @inject
-    def __init__(self, service: SetupService, *, on_success: Optional[Callable] = None, on_cancel: Optional[Callable] = None, on_close: Optional[Callable] = None) -> None:
+    def __init__(self, service: IFTSetupService) -> None:
         self._service = service
 
-        self._on_success = on_success or (lambda: None)
-        self._on_cancel = on_cancel or (lambda: None)
-        self._on_close = on_close or (lambda: None)
+        self._view = None  # type: Optional[IFTSetupView]
 
-        self._view = None  # type: Optional[SetupView]
-
-    def after_view_init(self, view: SetupView) -> None:
+    def after_view_init(self, view: IFTSetupView) -> None:
         self._view = view
 
     def hdl_continue_btn_clicked(self) -> None:
-        error = self._service.set_up()
-        if error:
-            self._view.show_error(error)
-            return
-
-        self._on_success()
-
-    def hdl_cancel_btn_clicked(self) -> None:
-        self._on_cancel()
-
-    def hdl_window_close(self) -> None:
-        self._on_close()
+        try:
+            self._service.set_up()
+        except Exception as e:
+            self._view.show_error(e)
