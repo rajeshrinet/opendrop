@@ -3,7 +3,7 @@ from typing import Optional, Callable, Any
 from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.setup.imageacquisition.component import ImageAcquisitionConfiguratorComponent
+from opendrop.app.commonconfig.imageacquisition.component import ImageAcquisitionConfiguratorComponent
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.widgets.error_dialog import ErrorDialog
 from . import SetupModule

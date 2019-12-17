@@ -1,4 +1,5 @@
 from injector import Module, Binder
+
 from .resolver import EditorResolver, UnknownImageAcquirerProvider
 
 
