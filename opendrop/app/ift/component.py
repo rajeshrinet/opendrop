@@ -5,8 +5,8 @@ from injector import inject
 from opendrop.app.ift.analysis.component import AnalysisComponent
 from opendrop.appfw import Component, View, Presenter, ComponentFactory
 from . import IFTModule
+from .config.component import SetupComponent
 from .service import IFTService
-from .setup.component import SetupComponent
 
 
 class IFTComponent(Component):
