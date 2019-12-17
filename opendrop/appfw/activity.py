@@ -23,7 +23,12 @@ class ActivityControllerService:
         self.on_start_activity.fire(component_cls, kwargs)
 
 
-def activitycontroller(entry: Type[Component], core_modules: Optional[Sequence] = None) -> Type[Component]:
+def activitycontroller(
+        entry: Type[Component],
+        entry_kwargs: Optional[Mapping[str, Any]] = None,
+        core_modules: Optional[Sequence] = None
+) -> Type[Component]:
+    entry_kwargs = entry_kwargs or {}
     core_modules = core_modules or []
 
     class ActivityControllerComponent(Component):
@@ -80,7 +85,7 @@ def activitycontroller(entry: Type[Component], core_modules: Optional[Sequence] 
                 for conn in connections
             )
 
-            self._hdl_start_activity(entry, {})
+            self._hdl_start_activity(entry, entry_kwargs)
 
         def _hdl_start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
             self._view.start_activity(component_cls, kwargs)
