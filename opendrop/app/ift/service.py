@@ -1,6 +1,6 @@
 from injector import Module, Binder, inject, singleton
 
-from opendrop.app.service import AppService
+from opendrop.appfw import ActivityControllerService, QuitService
 from .core import SessionModule
 
 
@@ -12,12 +12,13 @@ class IFTModule(Module):
 
 class IFTService:
     @inject
-    def __init__(self, app_service: AppService) -> None:
-        self._app_service = app_service
+    def __init__(self, activity_controller: ActivityControllerService, quitter: QuitService) -> None:
+        self._activity_controller = activity_controller
+        self._quitter = quitter
 
     def back(self) -> None:
         from opendrop.app.start.component import StartComponent
-        self._app_service.start_activity(StartComponent)
+        self._activity_controller.start_activity(StartComponent)
 
     def quit(self) -> None:
-        self._app_service.quit()
+        self._quitter.quit()

@@ -27,8 +27,13 @@
 # with this software.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from opendrop.app.component import AppComponent
-from opendrop.appfw import Bootstrap
+from opendrop.app.start.component import StartComponent
+from opendrop.appfw import Bootstrap, activitycontroller
+
+
+AppComponent = activitycontroller(
+    entry=StartComponent,
+)
 
 program = Bootstrap(AppComponent)
 program.run()
