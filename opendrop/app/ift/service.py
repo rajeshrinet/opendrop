@@ -2,7 +2,7 @@ from typing import Optional
 
 from injector import Module, Binder, inject, singleton, provider
 
-from opendrop.app.core.imageacquirer import ImageAcquirer
+from opendrop.app.common.core.imageacquirer import ImageAcquirer
 from opendrop.app.ift.session import IFTSession
 from opendrop.appfw import ActivityControllerService, QuitService
 

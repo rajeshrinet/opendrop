@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock
 import numpy as np
 import pytest
 
-from opendrop.app.core.imageacquirer.filesystem import (
+from opendrop.app.common.core.imageacquirer import (
     _load_image,
     FilesystemAcquirer,
     UnknownImageTypeError,

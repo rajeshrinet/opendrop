@@ -1,6 +1,6 @@
 from injector import inject
 
-from opendrop.app.core.imageacquirer import ImageAcquirer
+from opendrop.app.common.core.imageacquirer import ImageAcquirer
 
 
 class IFTSession:

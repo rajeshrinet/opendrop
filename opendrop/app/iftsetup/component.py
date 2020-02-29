@@ -3,8 +3,8 @@ from typing import Optional
 from gi.repository import Gtk, Gdk
 from injector import inject
 
+from opendrop.app.common.core.imageacquirer.filesystem import EmptyPathsError
 from opendrop.app.commonsetup.imageacquisition import ImageAcquisitionConfiguratorComponent
-from opendrop.app.core.imageacquirer.filesystem import EmptyPathsError
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
 from opendrop.widgets.error_dialog import ErrorDialog
 from . import _IFTSetupModule
