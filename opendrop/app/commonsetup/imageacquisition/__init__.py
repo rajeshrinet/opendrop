@@ -1,1 +1,1 @@
-from .component import ImageAcquisitionConfiguratorComponent
+from .component import ImageAcquisitionSetupComponent

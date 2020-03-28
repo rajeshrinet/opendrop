@@ -10,12 +10,12 @@ from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from .editors import EditorsModule, EditorResolver, UnknownImageAcquirerProvider
 
 
-class ImageAcquisitionConfiguratorComponent(WidgetComponent):
+class ImageAcquisitionSetupComponent(WidgetComponent):
     modules = [EditorsModule]
 
 
-@ImageAcquisitionConfiguratorComponent.view
-class ImageAcquisitionConfiguratorView(WidgetView):
+@ImageAcquisitionSetupComponent.view
+class ImageAcquisitionSetupView(WidgetView):
     @inject
     def __init__(self, cf: ComponentFactory) -> None:
         self._cf = cf
@@ -70,17 +70,17 @@ class ImageAcquisitionConfiguratorView(WidgetView):
         editor.show()
 
 
-@ImageAcquisitionConfiguratorComponent.presenter
-class ImageAcquisitionConfiguratorPresenter(Presenter[ImageAcquisitionConfiguratorView]):
+@ImageAcquisitionSetupComponent.presenter
+class ImageAcquisitionSetupPresenter(Presenter[ImageAcquisitionSetupView]):
     @inject
     def __init__(self, service: ImageAcquisitionSetupService, resolver: EditorResolver) -> None:
         self._service = service
         self._resolver = resolver
 
-        self._view = None  # type: Optional[ImageAcquisitionConfiguratorView]
+        self._view = None  # type: Optional[ImageAcquisitionSetupView]
         self._before_view_destroy_cleanup_tasks = []
 
-    def after_view_init(self, view: ImageAcquisitionConfiguratorView) -> None:
+    def after_view_init(self, view: ImageAcquisitionSetupView) -> None:
         self._view = view
 
         connections = [

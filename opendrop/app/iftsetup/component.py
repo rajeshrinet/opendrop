@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk
 from injector import inject
 
 from opendrop.app.common.core.imageacquirer.filesystem import EmptyPathsError
-from opendrop.app.commonsetup.imageacquisition import ImageAcquisitionConfiguratorComponent
+from opendrop.app.commonsetup.imageacquisition import ImageAcquisitionSetupComponent
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
 from opendrop.widgets.error_dialog import ErrorDialog
 from . import _IFTSetupModule
@@ -36,9 +36,9 @@ class IFTSetupView(WidgetView):
         image_acquisition_frame = Gtk.Frame(label='Image acquisition', hexpand=True, vexpand=True)
         content_area.add(image_acquisition_frame)
 
-        image_acquisition_configurator = cf.create_widget(ImageAcquisitionConfiguratorComponent)
-        image_acquisition_configurator.props.margin = 10
-        image_acquisition_frame.add(image_acquisition_configurator)
+        image_acquisition_setup = cf.create_widget(ImageAcquisitionSetupComponent)
+        image_acquisition_setup.props.margin = 10
+        image_acquisition_frame.add(image_acquisition_setup)
 
         continue_btn = Gtk.Button('Continue')
         continue_btn.get_style_context().add_class('suggested-action')
