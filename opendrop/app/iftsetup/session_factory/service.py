@@ -1,6 +1,6 @@
 from injector import Injector, inject, Module, Binder, singleton
 
-from opendrop.app.common.core.setup.imageacquisition import ImageAcquisitionSetupModule, ImageAcquisitionSetupService
+from opendrop.app.commonsetup.core.imageacquisition import ImageAcquisitionSetupModule, ImageAcquisitionSetupService
 from opendrop.app.ift.session import IFTSession
 
 

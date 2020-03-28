@@ -4,7 +4,7 @@ from gi.repository import Gtk
 from injector import inject
 
 from opendrop.app.common.core.imageacquirer import FilesystemAcquirer, USBCameraAcquirer, ImageAcquirerProvider
-from opendrop.app.common.core.setup.imageacquisition import ImageAcquisitionSetupService
+from opendrop.app.commonsetup.core.imageacquisition import ImageAcquisitionSetupService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from .editors import EditorsModule, EditorResolver, UnknownImageAcquirerProvider

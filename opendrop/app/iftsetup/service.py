@@ -18,5 +18,9 @@ class IFTSetupService:
         self._activity_controller = activity_controller
 
     def set_up(self) -> None:
-        session = self._session_factory.create()
+        try:
+            session = self._session_factory.create()
+        except Exception:
+            raise
+
         self._activity_controller.start_activity(IFTComponent, session=session)
