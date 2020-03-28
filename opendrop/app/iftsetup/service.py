@@ -2,7 +2,7 @@ from injector import Module, Binder, inject, singleton
 
 from opendrop.app.ift.component import IFTComponent
 from opendrop.appfw import ActivityControllerService
-from .session_factory import SessionFactoryModule, SessionFactoryService
+from .core.sessionfactory import SessionFactoryModule, SessionFactoryService
 
 
 class IFTSetupModule(Module):
