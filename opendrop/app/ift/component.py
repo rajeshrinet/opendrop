@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.ift.session import IFTSession
+from opendrop.app.common.core.imageacquirer import ImageAcquirer
 from opendrop.appfw import Presenter, ComponentFactory, WidgetView, WidgetComponent
 from . import _IFTModule
 from .service import IFTService
@@ -34,9 +34,12 @@ class IFTView(WidgetView):
 @IFTComponent.presenter
 class IFTPresenter(Presenter[IFTView]):
     @inject
-    def __init__(self, service: IFTService, *, session: IFTSession) -> None:
+    def __init__(self, service: IFTService, *, image_acquirer: ImageAcquirer) -> None:
         self._service = service
-        self._service.set_session(session)
+
+        self._service.new_session(
+            image_acquirer=image_acquirer,
+        )
 
     def hdl_window_close(self) -> None:
         self._service.back()
