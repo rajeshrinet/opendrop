@@ -16,18 +16,18 @@ from opendrop.utility.bindable.typing import Bindable, ReadBindable
 _DefaultAcquirerType = NewType('_DefaultAcquirerType', Type[ImageAcquirer])
 
 
-class ImageAcquisitionSetupModule(Module):
+class ImageAcquirerSetupModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.install(ImageAcquirersModule)
 
     @singleton
     @provider
     def service(self, injector: Injector, default_acquirer_type: _DefaultAcquirerType)\
-            -> 'ImageAcquisitionSetupService':
+            -> 'ImageAcquirerSetupService':
         default_acquirer_type = cast(Type[ImageAcquirer], default_acquirer_type)
 
-        service = injector.create_object(ImageAcquisitionSetupService)
-        service.change_acquirer_type(default_acquirer_type)
+        service = injector.create_object(ImageAcquirerSetupService)
+        service.change_target(default_acquirer_type)
 
         return service
 
@@ -36,7 +36,7 @@ class ImageAcquisitionSetupModule(Module):
         return cast(_DefaultAcquirerType, FilesystemAcquirer)
 
 
-class ImageAcquisitionSetupService:
+class ImageAcquirerSetupService:
     @inject
     def __init__(self, resolver: ImageAcquirerResolver) -> None:
         self._resolver = resolver
@@ -46,11 +46,11 @@ class ImageAcquisitionSetupService:
 
         self._prepared_acquirer = None  # type: Optional[ImageAcquirer]
 
-    def change_acquirer_type(self, acquirer_cls: Type[ImageAcquirer]) -> None:
+    def change_target(self, acquirer_cls: Type[ImageAcquirer]) -> None:
         new_provider = self._resolver.resolve(acquirer_cls)
         self._provider.set(new_provider)
 
-    def get_acquirer(self) -> ImageAcquirer:
+    def provide_acquirer(self) -> ImageAcquirer:
         assert self._prepared_acquirer is None
 
         acquirer_provider = self.provider.get()

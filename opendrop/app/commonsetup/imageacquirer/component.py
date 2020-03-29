@@ -4,18 +4,18 @@ from gi.repository import Gtk
 from injector import inject
 
 from opendrop.app.common.core.imageacquirer import FilesystemAcquirer, USBCameraAcquirer, ImageAcquirerProvider
-from opendrop.app.commonsetup.core.imageacquisition import ImageAcquisitionSetupService
+from opendrop.app.commonsetup.core.imageacquirer import ImageAcquirerSetupService
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
 from opendrop.utility.bindable.gextension import GObjectPropertyBindable
 from .editors import EditorsModule, EditorResolver, UnknownImageAcquirerProvider
 
 
-class ImageAcquisitionSetupComponent(WidgetComponent):
+class ImageAcquirerSetupComponent(WidgetComponent):
     modules = [EditorsModule]
 
 
-@ImageAcquisitionSetupComponent.view
-class ImageAcquisitionSetupView(WidgetView):
+@ImageAcquirerSetupComponent.view
+class ImageAcquirerSetupView(WidgetView):
     @inject
     def __init__(self, cf: ComponentFactory) -> None:
         self._cf = cf
@@ -70,17 +70,17 @@ class ImageAcquisitionSetupView(WidgetView):
         editor.show()
 
 
-@ImageAcquisitionSetupComponent.presenter
-class ImageAcquisitionSetupPresenter(Presenter[ImageAcquisitionSetupView]):
+@ImageAcquirerSetupComponent.presenter
+class ImageAcquirerSetupPresenter(Presenter[ImageAcquirerSetupView]):
     @inject
-    def __init__(self, service: ImageAcquisitionSetupService, resolver: EditorResolver) -> None:
+    def __init__(self, service: ImageAcquirerSetupService, resolver: EditorResolver) -> None:
         self._service = service
         self._resolver = resolver
 
-        self._view = None  # type: Optional[ImageAcquisitionSetupView]
+        self._view = None  # type: Optional[ImageAcquirerSetupView]
         self._before_view_destroy_cleanup_tasks = []
 
-    def after_view_init(self, view: ImageAcquisitionSetupView) -> None:
+    def after_view_init(self, view: ImageAcquirerSetupView) -> None:
         self._view = view
 
         connections = [
@@ -119,7 +119,7 @@ class ImageAcquisitionSetupPresenter(Presenter[ImageAcquisitionSetupView]):
         if new_acquirer_cls is current_acquirer_cls:
             return
 
-        self._service.change_acquirer_type(new_acquirer_cls)
+        self._service.change_target(new_acquirer_cls)
 
     def before_view_destroy(self) -> None:
         for f in self._before_view_destroy_cleanup_tasks:
