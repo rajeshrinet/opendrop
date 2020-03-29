@@ -1,6 +1,6 @@
 import typing
 from collections import abc
-from typing import Iterator, TypeVar, Any, Optional, Iterable, Generic
+from typing import Iterator, TypeVar, Any, Iterable, Generic
 
 from opendrop.utility.events import Event
 
@@ -8,7 +8,7 @@ T = TypeVar('T')
 
 
 class BindableSet(Generic[T], abc.MutableSet):
-    def __init__(self, iterable: Optional[Iterable[T]] = None) -> None:
+    def __init__(self, iterable: Iterable[T] = ()) -> None:
         self.on_add = Event()
         self.on_remove = Event()
 
