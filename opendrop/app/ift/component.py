@@ -37,7 +37,7 @@ class IFTPresenter(Presenter[IFTView]):
     def __init__(self, service: IFTService, *, image_acquirer: ImageAcquirer) -> None:
         self._service = service
 
-        self._service.new_session(
+        self._service.init_session(
             image_acquirer=image_acquirer,
         )
 
