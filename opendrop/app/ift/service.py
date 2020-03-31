@@ -3,17 +3,15 @@ from typing import Optional
 from injector import Module, Binder, inject, singleton, provider
 
 from opendrop.app.common.core.imageacquirer import ImageAcquirer
-from opendrop.app.common.core.imagestack import ImageStack
+from opendrop.app.common.core.imagestack import ImageStackModule
 from opendrop.appfw import ActivityControllerService, QuitService
 
 
 class IFTModule(Module):
     def configure(self, binder: Binder) -> None:
-        binder.bind(interface=IFTService, to=IFTService, scope=singleton)
+        binder.install(ImageStackModule)
 
-    @provider
-    def image_stack(self, root: 'IFTService') -> ImageStack:
-        return root._image_stack
+        binder.bind(interface=IFTService, to=IFTService, scope=singleton)
 
     @provider
     def image_acquirer(self, root: 'IFTService') -> ImageAcquirer:
@@ -26,12 +24,9 @@ class IFTService:
         self._activity_controller = activity_controller
         self._quitter = quitter
 
-        self._image_stack = ImageStack()
         self._image_acquirer = None  # type: Optional[ImageAcquirer]
 
     def init_session(self, image_acquirer: ImageAcquirer) -> None:
-        self._image_stack.clear()
-
         self._image_acquirer = image_acquirer
 
     def back(self) -> None:
