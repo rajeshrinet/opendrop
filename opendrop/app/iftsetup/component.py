@@ -7,11 +7,11 @@ from opendrop.app.common.core.imageacquirer.filesystem import EmptyPathsError
 from opendrop.app.commonsetup.imageacquirer import ImageAcquirerSetupEditor
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
 from opendrop.widgets.error_dialog import ErrorDialog
-from .core.root import IFTSetupRootServiceModule, IFTSetupRootService
+from .core.iftsetup import IFTSetupServiceModule, IFTSetupService
 
 
 class IFTSetupComponent(WidgetComponent):
-    modules = [IFTSetupRootServiceModule]
+    modules = [IFTSetupServiceModule]
 
 
 @IFTSetupComponent.view
@@ -93,7 +93,7 @@ class IFTSetupComponentView(WidgetView):
 @IFTSetupComponent.presenter
 class IFTSetupComponentPresenter(Presenter[IFTSetupComponentView]):
     @inject
-    def __init__(self, service: IFTSetupRootService) -> None:
+    def __init__(self, service: IFTSetupService) -> None:
         self._service = service
 
         self._view = None  # type: Optional[IFTSetupComponentView]
