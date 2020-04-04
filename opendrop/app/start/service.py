@@ -3,7 +3,7 @@ from injector import Module, Binder, inject
 from opendrop.appfw import QuitService
 
 
-class StartModule(Module):
+class StartServiceModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.bind(interface=StartService, to=StartService)
 

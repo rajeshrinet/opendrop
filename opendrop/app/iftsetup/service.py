@@ -1,13 +1,13 @@
 from injector import Module, Binder, inject, singleton
 
-from opendrop.app.commonsetup.core.imageacquirer import ImageAcquirerSetupModule, ImageAcquirerSetupService
+from opendrop.app.commonsetup.core.imageacquirer import ImageAcquirerSetupServiceModule, ImageAcquirerSetupService
 from opendrop.app.ift.component import IFTComponent
 from opendrop.appfw import ActivityControllerService
 
 
-class IFTSetupModule(Module):
+class IFTSetupServiceModule(Module):
     def configure(self, binder: Binder):
-        binder.install(ImageAcquirerSetupModule)
+        binder.install(ImageAcquirerSetupServiceModule)
         binder.bind(interface=IFTSetupService, to=IFTSetupService, scope=singleton)
 
 

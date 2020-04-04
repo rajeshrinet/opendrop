@@ -1,1 +1,1 @@
-from .service import ImageAcquirerSetupModule, ImageAcquirerSetupService
+from .service import ImageAcquirerSetupServiceModule, ImageAcquirerSetupService

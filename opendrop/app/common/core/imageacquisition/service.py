@@ -5,7 +5,7 @@ from injector import Module, Binder, singleton
 from ..imageacquirer import ImageAcquirer
 
 
-class ImageAcquisitionModule(Module):
+class ImageAcquisitionServiceModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.bind(interface=ImageAcquisitionService, to=ImageAcquisitionService, scope=singleton)
 

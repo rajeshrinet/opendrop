@@ -1,15 +1,15 @@
 from injector import Module, Binder, inject, singleton
 
 from opendrop.app.common.core.imageacquirer import ImageAcquirer
-from opendrop.app.common.core.imageacquisition import ImageAcquisitionModule, ImageAcquisitionService
-from opendrop.app.common.core.imagestack import ImageStackModule
+from opendrop.app.common.core.imageacquisition import ImageAcquisitionServiceModule, ImageAcquisitionService
+from opendrop.app.common.core.imagestack import ImageStackServiceModule
 from opendrop.appfw import ActivityControllerService, QuitService
 
 
 class IFTRootServiceModule(Module):
     def configure(self, binder: Binder) -> None:
-        binder.install(ImageStackModule)
-        binder.install(ImageAcquisitionModule)
+        binder.install(ImageStackServiceModule)
+        binder.install(ImageAcquisitionServiceModule)
 
         binder.bind(interface=IFTRootService, to=IFTRootService, scope=singleton)
 

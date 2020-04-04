@@ -1,1 +1,1 @@
-from .service import ImageStackModule, ImageStackService
+from .service import ImageStackServiceModule, ImageStackService

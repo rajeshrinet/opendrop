@@ -7,12 +7,11 @@ from opendrop.app.common.core.imageacquirer.filesystem import EmptyPathsError
 from opendrop.app.commonsetup.imageacquirer import ImageAcquirerSetupComponent
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
 from opendrop.widgets.error_dialog import ErrorDialog
-from . import _IFTSetupModule
-from .service import IFTSetupService
+from .service import IFTSetupServiceModule, IFTSetupService
 
 
 class IFTSetupComponent(WidgetComponent):
-    modules = [_IFTSetupModule]
+    modules = [IFTSetupServiceModule]
 
 
 @IFTSetupComponent.view

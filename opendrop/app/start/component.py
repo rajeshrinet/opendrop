@@ -3,12 +3,11 @@ from injector import inject
 
 from opendrop.app.iftsetup import IFTSetupComponent
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
-from . import _StartModule
-from .service import StartService
+from .service import StartServiceModule, StartService
 
 
 class StartComponent(WidgetComponent):
-    modules = [_StartModule]
+    modules = [StartServiceModule]
 
 
 @StartComponent.view

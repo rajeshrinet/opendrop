@@ -4,7 +4,7 @@ from injector import Module, Binder, singleton
 from opendrop.utility.bindable.collections import BindableSet
 
 
-class ImageStackModule(Module):
+class ImageStackServiceModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.bind(interface=ImageStackService, to=ImageStackService, scope=singleton)
 

@@ -16,14 +16,13 @@ from opendrop.utility.bindable.typing import Bindable, ReadBindable
 _DefaultAcquirerType = NewType('_DefaultAcquirerType', Type[ImageAcquirer])
 
 
-class ImageAcquirerSetupModule(Module):
+class ImageAcquirerSetupServiceModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.install(ImageAcquirersModule)
 
     @singleton
     @provider
-    def service(self, injector: Injector, default_acquirer_type: _DefaultAcquirerType)\
-            -> 'ImageAcquirerSetupService':
+    def service(self, injector: Injector, default_acquirer_type: _DefaultAcquirerType) -> 'ImageAcquirerSetupService':
         default_acquirer_type = cast(Type[ImageAcquirer], default_acquirer_type)
 
         service = injector.create_object(ImageAcquirerSetupService)
