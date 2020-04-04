@@ -15,9 +15,10 @@ class IFTSetupComponent(WidgetComponent):
 
 
 @IFTSetupComponent.view
-class IFTSetupView(WidgetView):
+class IFTSetupComponentView(WidgetView):
     @inject
-    def __init__(self, presenter: 'IFTSetupPresenter', window_ctx: WindowContext, cf: ComponentFactory) -> None:
+    def __init__(self, presenter: 'IFTSetupComponentPresenter', window_ctx: WindowContext, cf: ComponentFactory)\
+            -> None:
         self._presenter = presenter
         self._window_ctx = window_ctx
 
@@ -90,14 +91,14 @@ class IFTSetupView(WidgetView):
 
 
 @IFTSetupComponent.presenter
-class IFTSetupPresenter(Presenter[IFTSetupView]):
+class IFTSetupComponentPresenter(Presenter[IFTSetupComponentView]):
     @inject
     def __init__(self, service: IFTSetupRootService) -> None:
         self._service = service
 
-        self._view = None  # type: Optional[IFTSetupView]
+        self._view = None  # type: Optional[IFTSetupComponentView]
 
-    def after_view_init(self, view: IFTSetupView) -> None:
+    def after_view_init(self, view: IFTSetupComponentView) -> None:
         self._view = view
 
     def hdl_continue_btn_clicked(self) -> None:
