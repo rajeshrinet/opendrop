@@ -31,8 +31,8 @@ class IFTRootService:
         self._image_acquisition.acquirer = image_acquirer
 
     def back(self) -> None:
-        from opendrop.app.start.component import StartComponent
-        self._activity_controller.start_activity(StartComponent)
+        from opendrop.app.start.window import StartWindow
+        self._activity_controller.start_activity(StartWindow)
 
     def quit(self) -> None:
         self._quitter.quit()

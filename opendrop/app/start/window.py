@@ -6,14 +6,14 @@ from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFact
 from .service import StartServiceModule, StartService
 
 
-class StartComponent(WidgetComponent):
+class StartWindow(WidgetComponent):
     modules = [StartServiceModule]
 
 
-@StartComponent.view
-class StartView(WidgetView):
+@StartWindow.view
+class StartWindowView(WidgetView):
     @inject
-    def __init__(self, presenter: 'StartPresenter', cf: ComponentFactory) -> None:
+    def __init__(self, presenter: 'StartWindowPresenter', cf: ComponentFactory) -> None:
         self._presenter = presenter
 
         window = Gtk.Window(title='OpenDrop', window_position=Gtk.WindowPosition.CENTER)
@@ -42,8 +42,8 @@ class StartView(WidgetView):
         return True
 
 
-@StartComponent.presenter
-class StartPresenter(Presenter['StartView']):
+@StartWindow.presenter
+class StartWindowPresenter(Presenter['StartWindowView']):
     @inject
     def __init__(self, service: StartService) -> None:
         self._service = service

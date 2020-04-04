@@ -1,1 +1,1 @@
-from .component import StartComponent
+from .window import StartWindow
