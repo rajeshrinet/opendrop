@@ -5,15 +5,16 @@ from opendrop.app.ift.component import IFTComponent
 from opendrop.appfw import ActivityControllerService
 
 
-class IFTSetupServiceModule(Module):
+class IFTSetupRootServiceModule(Module):
     def configure(self, binder: Binder):
         binder.install(ImageAcquirerSetupServiceModule)
-        binder.bind(interface=IFTSetupService, to=IFTSetupService, scope=singleton)
+        binder.bind(interface=IFTSetupRootService, to=IFTSetupRootService, scope=singleton)
 
 
-class IFTSetupService:
+class IFTSetupRootService:
     @inject
-    def __init__(self, image_acquirer_setup: ImageAcquirerSetupService, activity_controller: ActivityControllerService) -> None:
+    def __init__(self, image_acquirer_setup: ImageAcquirerSetupService, activity_controller: ActivityControllerService)\
+            -> None:
         self._activity_controller = activity_controller
         self._image_acquirer_setup = image_acquirer_setup
 
