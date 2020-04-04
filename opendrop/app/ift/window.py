@@ -4,11 +4,11 @@ from injector import inject
 from opendrop.app.common.core.imageacquirer import ImageAcquirer
 from opendrop.appfw import Presenter, ComponentFactory, WidgetView, WidgetComponent
 from .component import IFTComponent
-from .core.root import IFTRootServiceModule, IFTRootService
+from .core.ift import IFTServiceModule, IFTService
 
 
 class IFTWindow(WidgetComponent):
-    modules = [IFTRootServiceModule]
+    modules = [IFTServiceModule]
 
 
 @IFTWindow.view
@@ -39,7 +39,7 @@ class IFTWindowView(WidgetView):
 @IFTWindow.presenter
 class IFTWindowPresenter(Presenter[IFTWindowView]):
     @inject
-    def __init__(self, service: IFTRootService, *, image_acquirer: ImageAcquirer) -> None:
+    def __init__(self, service: IFTService, *, image_acquirer: ImageAcquirer) -> None:
         self._service = service
 
         self._service.init_session(

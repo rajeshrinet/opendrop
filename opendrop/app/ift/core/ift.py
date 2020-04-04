@@ -6,15 +6,15 @@ from opendrop.app.common.core.imagestack import ImageStackServiceModule
 from opendrop.appfw import ActivityControllerService, QuitService
 
 
-class IFTRootServiceModule(Module):
+class IFTServiceModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.install(ImageStackServiceModule)
         binder.install(ImageAcquisitionServiceModule)
 
-        binder.bind(interface=IFTRootService, to=IFTRootService, scope=singleton)
+        binder.bind(interface=IFTService, to=IFTService, scope=singleton)
 
 
-class IFTRootService:
+class IFTService:
     @inject
     def __init__(
             self,
