@@ -4,6 +4,7 @@ from injector import inject
 from opendrop.app.common.core.imageacquirer import ImageAcquirer
 from opendrop.appfw import Presenter, ComponentFactory, WidgetView, WidgetComponent
 from . import _IFTModule
+from .main import IFTMainComponent
 from .service import IFTService
 
 
@@ -20,6 +21,11 @@ class IFTView(WidgetView):
 
         window = Gtk.Window(title='Interfacial Tension', window_position=Gtk.WindowPosition.CENTER)
         self.set_widget(window)
+
+        body = cf.create_widget(IFTMainComponent)
+        body.show()
+
+        window.add(body)
 
         window.connect('delete-event', self._hdl_window_delete_event)
         window.show()
