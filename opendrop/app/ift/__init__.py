@@ -1,1 +1,1 @@
-from .component import IFTComponent
+from .component import IFTWindow

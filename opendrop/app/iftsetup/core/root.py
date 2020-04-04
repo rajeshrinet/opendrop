@@ -1,7 +1,7 @@
 from injector import Module, Binder, inject, singleton
 
 from opendrop.app.commonsetup.core.imageacquirer import ImageAcquirerSetupServiceModule, ImageAcquirerSetupService
-from opendrop.app.ift.component import IFTComponent
+from opendrop.app.ift.component import IFTWindow
 from opendrop.appfw import ActivityControllerService
 
 
@@ -24,4 +24,4 @@ class IFTSetupRootService:
         except Exception:
             raise
 
-        self._activity_controller.start_activity(IFTComponent, image_acquirer=image_acquirer)
+        self._activity_controller.start_activity(IFTWindow, image_acquirer=image_acquirer)

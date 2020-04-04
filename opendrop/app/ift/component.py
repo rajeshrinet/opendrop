@@ -7,14 +7,14 @@ from .core.root import IFTRootServiceModule, IFTRootService
 from .main import IFTMainComponent
 
 
-class IFTComponent(WidgetComponent):
+class IFTWindow(WidgetComponent):
     modules = [IFTRootServiceModule]
 
 
-@IFTComponent.view
-class IFTView(WidgetView):
+@IFTWindow.view
+class IFTWindowView(WidgetView):
     @inject
-    def __init__(self, presenter: 'IFTPresenter', cf: ComponentFactory) -> None:
+    def __init__(self, presenter: 'IFTWindowPresenter', cf: ComponentFactory) -> None:
         self._presenter = presenter
         self._cf = cf
 
@@ -36,8 +36,8 @@ class IFTView(WidgetView):
         return True
 
 
-@IFTComponent.presenter
-class IFTPresenter(Presenter[IFTView]):
+@IFTWindow.presenter
+class IFTWindowPresenter(Presenter[IFTWindowView]):
     @inject
     def __init__(self, service: IFTRootService, *, image_acquirer: ImageAcquirer) -> None:
         self._service = service
