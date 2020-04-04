@@ -1,1 +1,1 @@
-from .component import ImageAcquirerSetupComponent
+from .component import ImageAcquirerSetupEditor

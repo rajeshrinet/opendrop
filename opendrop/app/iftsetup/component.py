@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk
 from injector import inject
 
 from opendrop.app.common.core.imageacquirer.filesystem import EmptyPathsError
-from opendrop.app.commonsetup.imageacquirer import ImageAcquirerSetupComponent
+from opendrop.app.commonsetup.imageacquirer import ImageAcquirerSetupEditor
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
 from opendrop.widgets.error_dialog import ErrorDialog
 from .core.root import IFTSetupRootServiceModule, IFTSetupRootService
@@ -35,7 +35,7 @@ class IFTSetupView(WidgetView):
         image_acquisition_frame = Gtk.Frame(label='Image acquisition', hexpand=True, vexpand=True)
         content_area.add(image_acquisition_frame)
 
-        image_acquirer_setup = cf.create_widget(ImageAcquirerSetupComponent)
+        image_acquirer_setup = cf.create_widget(ImageAcquirerSetupEditor)
         image_acquirer_setup.props.margin = 10
         image_acquisition_frame.add(image_acquirer_setup)
 
