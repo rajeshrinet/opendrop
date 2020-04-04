@@ -1,7 +1,7 @@
 from injector import Module, Binder, inject, singleton
 
 from opendrop.app.commonsetup.core.imageacquirer import ImageAcquirerSetupServiceModule, ImageAcquirerSetupService
-from opendrop.app.ift.component import IFTWindow
+from opendrop.app.ift.window import IFTWindow
 from opendrop.appfw import ActivityControllerService
 
 
