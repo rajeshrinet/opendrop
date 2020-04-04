@@ -1,11 +1,11 @@
 from gi.repository import Gtk
 
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter
-from ._service import ObservationViewerComponentServiceModule
+from ._service import ObservationViewerServiceModule
 
 
 class ObservationViewerComponent(WidgetComponent):
-    modules = [ObservationViewerComponentServiceModule]
+    modules = [ObservationViewerServiceModule]
 
 
 @ObservationViewerComponent.view

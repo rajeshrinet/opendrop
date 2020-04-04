@@ -1,10 +1,10 @@
 from injector import Module, Binder, singleton
 
 
-class ObservationViewerComponentServiceModule(Module):
+class ObservationViewerServiceModule(Module):
     def configure(self, binder: Binder) -> None:
-        binder.bind(interface=ObservationViewerComponentService, to=ObservationViewerComponentService, scope=singleton)
+        binder.bind(interface=ObservationViewerService, to=ObservationViewerService, scope=singleton)
 
 
-class ObservationViewerComponentService:
+class ObservationViewerService:
     pass
