@@ -49,7 +49,7 @@ def activitycontroller(
             self._activity = None
             activity.destroy()
 
-        def _set_activity(self, activity: Component) -> None:
+        def _set_activity(self, activity: Optional[Component]) -> None:
             self._clear_activity()
 
             if activity is None:
