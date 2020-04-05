@@ -5,7 +5,9 @@ from injector import inject
 
 from opendrop.app.common.core.imageacquirer.filesystem import EmptyPathsError
 from opendrop.app.commonsetup.imageacquirer import ImageAcquirerSetupEditor
-from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext
+from opendrop.app.ift import IFTWindow
+from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory, WindowContext, \
+    ActivityControllerService
 from opendrop.widgets.error_dialog import ErrorDialog
 from .core.iftsetup import IFTSetupServiceModule, IFTSetupService
 
@@ -93,7 +95,8 @@ class IFTSetupComponentView(WidgetView):
 @IFTSetupComponent.presenter
 class IFTSetupComponentPresenter(Presenter[IFTSetupComponentView]):
     @inject
-    def __init__(self, service: IFTSetupService) -> None:
+    def __init__(self, activity_controller: ActivityControllerService, service: IFTSetupService) -> None:
+        self._activity_controller = activity_controller
         self._service = service
 
         self._view = None  # type: Optional[IFTSetupComponentView]
@@ -103,6 +106,9 @@ class IFTSetupComponentPresenter(Presenter[IFTSetupComponentView]):
 
     def hdl_continue_btn_clicked(self) -> None:
         try:
-            self._service.set_up()
+            options = self._service.set_up()
         except Exception as e:
             self._view.show_error(e)
+            return
+
+        self._activity_controller.change_activity(IFTWindow, **options)
