@@ -48,7 +48,11 @@ def activitycontroller(
             self._activity = None
             activity.destroy()
 
+        _set_activity__prepared = False
+
         def _set_activity(self, activity: Optional[Component]) -> None:
+            assert self._set_activity__prepared
+
             self._clear_activity()
 
             if activity is None:
@@ -56,8 +60,24 @@ def activitycontroller(
 
             self._activity = activity
 
+            self._set_activity__prepared = False
+
+        def _set_activity_prepare(self) -> None:
+            self._clear_activity()
+            self._set_activity__prepared = True
+
+        def _set_activity_prepared(self) -> bool:
+            return self._set_activity__prepared
+
         def change_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
+            self._set_activity_prepare()
+
             component = self._cf.create(component_cls, **kwargs)
+            if not self._set_activity_prepared():
+                # Another component was changed to during the initialisation of the current component
+                component.destroy()
+                return
+
             self._set_activity(component)
 
             if isinstance(component, WidgetComponent):
