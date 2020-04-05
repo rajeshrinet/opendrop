@@ -32,7 +32,7 @@ class IFTService:
 
     def back(self) -> None:
         from opendrop.app.start.window import StartWindow
-        self._activity_controller.start_activity(StartWindow)
+        self._activity_controller.change_activity(StartWindow)
 
     def quit(self) -> None:
         self._quitter.quit()

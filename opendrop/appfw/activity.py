@@ -16,10 +16,10 @@ class _ActivityControllerModule(Module):
 class ActivityControllerService:
     @inject
     def __init__(self) -> None:
-        self._do_start_activity = None
+        self._do_change_activity = None
 
-    def start_activity(self, component_cls: Type[Component], **kwargs) -> None:
-        self._do_start_activity(component_cls, kwargs)
+    def change_activity(self, component_cls: Type[Component], **kwargs) -> None:
+        self._do_change_activity(component_cls, kwargs)
 
 
 def activitycontroller(
@@ -56,7 +56,7 @@ def activitycontroller(
 
             self._activity = activity
 
-        def start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
+        def change_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
             component = self._cf.create(component_cls, **kwargs)
             self._set_activity(component)
 
@@ -74,14 +74,14 @@ def activitycontroller(
 
         def after_view_init(self, view: ActivityControllerView) -> None:
             self._view = view
-            self._service._do_start_activity = self._start_activity
+            self._service._do_change_activity = self._change_activity
 
-            self._start_activity(entry, entry_kwargs)
+            self._change_activity(entry, entry_kwargs)
 
-        def _start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
-            self._view.start_activity(component_cls, kwargs)
+        def _change_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
+            self._view.change_activity(component_cls, kwargs)
 
         def before_view_destroy(self) -> None:
-            self._service._do_start_activity = None
+            self._service._do_change_activity = None
 
     return ActivityControllerComponent

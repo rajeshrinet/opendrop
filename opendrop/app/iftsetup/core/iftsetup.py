@@ -24,4 +24,4 @@ class IFTSetupService:
         except Exception:
             raise
 
-        self._activity_controller.start_activity(IFTWindow, image_acquirer=image_acquirer)
+        self._activity_controller.change_activity(IFTWindow, image_acquirer=image_acquirer)
