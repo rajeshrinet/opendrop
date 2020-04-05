@@ -2,7 +2,6 @@ from typing import Optional, Type, Mapping, Any, Sequence
 
 from injector import Binder, Module, inject, singleton
 
-from opendrop.utility.events import Event
 from .component import Component, WidgetComponent
 from .component_factory import ComponentFactory
 from .presenter import Presenter
@@ -17,10 +16,10 @@ class _ActivityControllerModule(Module):
 class ActivityControllerService:
     @inject
     def __init__(self) -> None:
-        self.on_start_activity = Event()
+        self._do_start_activity = None
 
     def start_activity(self, component_cls: Type[Component], **kwargs) -> None:
-        self.on_start_activity.fire(component_cls, kwargs)
+        self._do_start_activity(component_cls, kwargs)
 
 
 def activitycontroller(
@@ -75,23 +74,14 @@ def activitycontroller(
 
         def after_view_init(self, view: ActivityControllerView) -> None:
             self._view = view
+            self._service._do_start_activity = self._start_activity
 
-            connections = [
-                self._service.on_start_activity.connect(self._hdl_start_activity),
-            ]
+            self._start_activity(entry, entry_kwargs)
 
-            self._before_view_destroy_cleanup_tasks += (
-                conn.disconnect
-                for conn in connections
-            )
-
-            self._hdl_start_activity(entry, entry_kwargs)
-
-        def _hdl_start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
+        def _start_activity(self, component_cls: Type[Component], kwargs: Mapping[str, Any]) -> None:
             self._view.start_activity(component_cls, kwargs)
 
         def before_view_destroy(self) -> None:
-            for f in self._before_view_destroy_cleanup_tasks:
-                f()
+            self._service._do_start_activity = None
 
     return ActivityControllerComponent
