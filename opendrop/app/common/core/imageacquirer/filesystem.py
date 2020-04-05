@@ -8,7 +8,7 @@ from injector import Module, provider
 
 from opendrop.utility.bindable import VariableBindable
 from opendrop.utility.bindable.typing import Bindable
-from ._abc import ImageAcquirerProvider
+from ._abc import ImageAcquirerProvider, ImageAcquirer
 
 
 class EmptyPathsError(ValueError):
@@ -25,7 +25,7 @@ class FilesystemAcquirerModule(Module):
         return FilesystemAcquirerProvider()
 
 
-class FilesystemAcquirer:
+class FilesystemAcquirer(ImageAcquirer):
     def __init__(self, image_paths: Sequence[Path], frame_interval: float) -> None:
         self._check_image_paths(image_paths)
         self._check_frame_interval(image_paths, frame_interval)
