@@ -26,6 +26,7 @@ class Component:
 
         self._children_registry = ComponentChildrenRegistry()
         self._parent = None  # type: Optional[Component]
+        self._is_initialised = False
         self._is_destroyed = False
 
         self.on_destroyed = Event()
@@ -70,10 +71,16 @@ class Component:
 
         self._presenter_obj.after_view_init(self._view_obj)
 
+        # Mark component as initialised
+        self._is_initialised = True
+
     def _register_child(self, child: 'Component') -> None:
         self._children_registry.register(child)
 
     def destroy(self) -> None:
+        if not self._is_initialised:
+            raise ValueError("Can't destroy this component as it is not yet fully initialised.")
+
         if self._is_destroyed:
             return
 
