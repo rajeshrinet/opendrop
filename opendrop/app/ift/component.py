@@ -1,8 +1,10 @@
 from gi.repository import Gtk
 from injector import inject
 
+from opendrop.app.common.core.imageacquirer import ImageAcquirer
 from opendrop.app.common.observation.component import ObservationViewerComponent
 from opendrop.appfw import Presenter, WidgetView, WidgetComponent, ComponentFactory
+from .core.ift import IFTService
 
 
 class IFTComponent(WidgetComponent):
@@ -27,4 +29,10 @@ class IFTComponentView(WidgetView):
 
 @IFTComponent.presenter
 class IFTComponentPresenter(Presenter[IFTComponentView]):
-    pass
+    @inject
+    def __init__(self, service: IFTService, *, image_acquirer: ImageAcquirer) -> None:
+        self._service = service
+
+        self._service.init_session(
+            image_acquirer=image_acquirer,
+        )
