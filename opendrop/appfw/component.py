@@ -1,19 +1,42 @@
-from inspect import Signature, Parameter, signature
-from typing import Mapping, Any, MutableSequence, Callable, Iterator, Sequence, Optional, Type, NewType, cast
+from inspect import Parameter, Signature, signature
+from typing import (
+    Any,
+    Callable,
+    Iterator,
+    Mapping,
+    MutableSequence,
+    NewType,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    cast,
+)
 
 from gi.repository import Gtk
-from injector import Injector, Binder, CallableProvider, Module, InstanceProvider, inject
+from injector import (
+    Binder,
+    CallableProvider,
+    Injector,
+    InstanceProvider,
+    Module,
+    inject,
+)
 
 from opendrop.utility.events import Event
+
 from .presenter import Presenter
 from .view import View, WidgetView
+
+PresenterT = TypeVar('PresenterT', bound=Presenter)
+ViewT = TypeVar('ViewT', bound=View)
 
 
 class Component:
     modules = ()  # type: Sequence
 
-    _view_cls = None  # type: Optional[Type[View]]
-    _presenter_cls = None  # type: Optional[Type[Presenter]]
+    _view_cls = None  # type: Optional[Type]
+    _presenter_cls = None  # type: Optional[Type]
 
     @inject
     def __init__(
@@ -97,12 +120,12 @@ class Component:
         self._parent = None
 
     @classmethod
-    def presenter(cls, presenter_cls: Type[Presenter]) -> Type[Presenter]:
+    def presenter(cls, presenter_cls: Type[PresenterT]) -> Type[PresenterT]:
         cls._presenter_cls = presenter_cls
         return presenter_cls
 
     @classmethod
-    def view(cls, view_cls: Type[View]) -> Type[View]:
+    def view(cls, view_cls: Type[ViewT]) -> Type[ViewT]:
         cls._view_cls = view_cls
         return view_cls
 
