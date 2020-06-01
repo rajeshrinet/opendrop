@@ -7,7 +7,7 @@ from opendrop.utility.events import Event
 T = TypeVar('T')
 
 
-class BindableSet(Generic[T], abc.MutableSet):
+class BindableSet(abc.MutableSet, Generic[T]):
     def __init__(self, iterable: Iterable[T] = ()) -> None:
         self.on_add = Event()
         self.on_remove = Event()
