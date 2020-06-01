@@ -180,10 +180,11 @@ class _ComponentContextModule(Module):
             to=InstanceProvider(self._component)
         )
 
-        binder.bind(
-            interface=self._component._presenter_cls,
-            to=CallableProvider(lambda: self._component._presenter_obj)
-        )
+        if self._component._presenter_cls is not None:
+            binder.bind(
+                interface=self._component._presenter_cls,
+                to=CallableProvider(lambda: self._component._presenter_obj)
+            )
 
 
 class WidgetComponent(Component):
