@@ -1,4 +1,4 @@
-from typing import Optional, Type, Mapping, Any, Sequence
+from typing import Optional, Type, Mapping, Any, Sequence, Callable
 
 from injector import Binder, Module, inject, singleton
 
@@ -16,7 +16,7 @@ class _ActivityControllerModule(Module):
 class ActivityControllerService:
     @inject
     def __init__(self) -> None:
-        self._do_change_activity = None
+        self._do_change_activity = None  # type: Optional[Callable]
 
     def change_activity(self, component_cls: Type[Component], **kwargs) -> None:
         self._do_change_activity(component_cls, kwargs)
