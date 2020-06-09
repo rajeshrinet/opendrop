@@ -1,13 +1,12 @@
 from gi.repository import Gtk, Gdk
 from injector import inject
 
-from opendrop.app.iftsetup import IFTSetupComponent
 from opendrop.appfw import WidgetComponent, WidgetView, Presenter, ComponentFactory
-from .service import StartServiceModule, StartService
+from opendrop.appfw import QuitService
 
 
 class StartWindow(WidgetComponent):
-    modules = [StartServiceModule]
+    modules = []
 
 
 @StartWindow.view
@@ -21,15 +20,6 @@ class StartWindowView(WidgetView):
 
         body = Gtk.Grid()
         window.add(body)
-
-        setup_stack = Gtk.Stack()
-        body.attach(setup_stack, 1, 0, 1, 1)
-
-        sidebar = Gtk.StackSidebar(stack=setup_stack)
-        body.attach(sidebar, 0, 0, 1, 1)
-
-        ift_setup = cf.create_widget(IFTSetupComponent)
-        setup_stack.add_titled(ift_setup, name='ift', title='Interfacial Tension')
 
         window.foreach(Gtk.Widget.show_all)
 
@@ -45,8 +35,8 @@ class StartWindowView(WidgetView):
 @StartWindow.presenter
 class StartWindowPresenter(Presenter['StartWindowView']):
     @inject
-    def __init__(self, service: StartService) -> None:
-        self._service = service
+    def __init__(self, quit_service: QuitService) -> None:
+        self._quit_service = quit_service
 
     def hdl_window_request_close(self) -> None:
-        self._service.close()
+        self._quit_service.quit()
