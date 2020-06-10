@@ -21,6 +21,12 @@ class StartWindowView(WidgetView):
         body = Gtk.Grid()
         window.add(body)
 
+        new_experiment_btn = Gtk.Button(label="New Experiment")
+        body.add(new_experiment_btn)
+
+        analyse_recording_btn = Gtk.Button(label="Analyse Recording")
+        body.add(analyse_recording_btn)
+
         window.foreach(Gtk.Widget.show_all)
 
         window.connect('delete-event', self._hdl_window_delete_event)
