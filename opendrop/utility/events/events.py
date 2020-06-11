@@ -32,9 +32,12 @@ import types
 import warnings
 import weakref
 from enum import Enum
-from typing import Callable, List, Optional, Any, Mapping, Tuple, Iterable, Union, Sequence
+from typing import Callable, List, Optional, Any, Mapping, Tuple, Iterable, Union, Sequence, Generic, TypeVar
 
 from . import exceptions
+
+
+CallableT = TypeVar('CallableT', bound=Callable)
 
 
 class EventConnection:
@@ -121,11 +124,11 @@ class EventConnection:
         return self._invocation_count
 
 
-class Event:
+class Event(Generic[CallableT]):
     def __init__(self):
         self.__connections = []  # type: List[EventConnection]
 
-    def connect(self, handler: Callable, **opts) -> EventConnection:
+    def connect(self, handler: CallableT, **opts) -> EventConnection:
         """
         Connect function `handler` to the event. `handler` is invoked with the same arguments (and keyword arguments) as
         those that were used to fire the event.
@@ -165,7 +168,7 @@ class Event:
         self._add_connection(new_conn)
         return new_conn
 
-    def disconnect_by_func(self, func: Callable) -> None:
+    def disconnect_by_func(self, func: CallableT) -> None:
         """Disconnect `func` from this event. If `func` is not connected, raises NotConnected.
 
         :param func:
@@ -201,7 +204,7 @@ class Event:
         """
         self.fire_with_opts(args, kwargs)
 
-    def is_func_connected(self, func: Callable) -> bool:
+    def is_func_connected(self, func: CallableT) -> bool:
         """Return True if `func` is connected."""
         if self._find_connection_by_func(func):
             return True
@@ -216,7 +219,7 @@ class Event:
         assert conn.status is not EventConnection.Status.CONNECTED
         self.__connections.remove(conn)
 
-    def _find_connection_by_func(self, func: Callable) -> Optional[EventConnection]:
+    def _find_connection_by_func(self, func: CallableT) -> Optional[EventConnection]:
         """Return an `EventConnection` object with handler equal (equality is tested using the `==` operator) to
         `func`, if it exists and is connected, else return None.
 
