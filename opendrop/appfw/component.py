@@ -1,4 +1,5 @@
 from inspect import Parameter, Signature, signature
+import warnings
 from typing import (
     Any,
     Callable,
@@ -128,6 +129,10 @@ class Component:
     def view(cls, view_cls: Type[ViewT]) -> Type[ViewT]:
         cls._view_cls = view_cls
         return view_cls
+
+    def __del__(self) -> None:
+        if not self._is_destroyed:
+            warnings.warn('Component instance about to be destroyed but destroy() has not been called')
 
 
 class ComponentChildrenRegistry:
