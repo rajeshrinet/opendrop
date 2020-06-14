@@ -75,7 +75,7 @@ class Component:
 
         unused_keywords = set(additional_kwargs.keys()) - {*presenter_kwargs.keys(), *view_kwargs.keys()}
         if unused_keywords:
-            raise ValueError("'additional_kwargs' contains unused keywords {!s}".format(unused_keywords))
+            raise TypeError("'additional_kwargs' contains unused keywords {!s}".format(unused_keywords))
 
         self._presenter_obj = self._injector.create_object(
             cls=self._presenter_cls,
